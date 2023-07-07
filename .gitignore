@@ -1,0 +1,13 @@
+*.pdf
+*.synctex.gz
+*.aux
+*.log
+*.xdv
+*.fdb_latexmk
+*.out
+*.fls
+*.toc
+*.mw
+*.pyg
+*.run.xml
+build/

@@ -1,0 +1,50 @@
+\documentclass{kaobook}
+
+\usepackage{zhnumber}
+\usepackage{xeCJK}
+\usepackage{subfiles}
+\usepackage{listings}
+
+\lstset{
+  language=C++,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{purple},
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=true
+}
+
+% Use your own fonts
+\setCJKmainfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+
+\begin{document}
+
+\renewcommand\contentsname{目录}
+\renewcommand\listfigurename{插图}
+\renewcommand\listtablename{表格}
+\renewcommand\indexname{索引}
+\renewcommand\bibname{参考文献}
+\renewcommand\figurename{图}
+\renewcommand\tablename{表}
+
+\title{LeetCode Book：个人的刷题笔记}
+\author{佘嘉洛}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+
+
+\mainmatter
+
+\subfile{src/chapter_1/two_pointer.tex}
+
+\end{document}
