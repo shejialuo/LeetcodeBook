@@ -4,8 +4,6 @@
 
 我或多或少地想解决这个问题，刷题不是目的而是手段。
 
-
-
 ## Latex模板
 
 本文采用的Latex模板来源于[kaobook](https://github.com/fmarotta/kaobook)。

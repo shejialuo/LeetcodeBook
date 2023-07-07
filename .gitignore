@@ -10,4 +10,5 @@
 *.mw
 *.pyg
 *.run.xml
+*.nlo
 build/

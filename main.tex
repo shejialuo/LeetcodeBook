@@ -5,6 +5,10 @@
 \usepackage{subfiles}
 \usepackage{listings}
 
+\usepackage[framed=true]{kaotheorems}
+
+\makenomenclature
+
 \lstset{
   language=C++,
   basicstyle=\ttfamily\small,
@@ -34,16 +38,67 @@
 \renewcommand\figurename{图}
 \renewcommand\tablename{表}
 
-\title{LeetCode Book：个人的刷题笔记}
-\author{佘嘉洛}
+\titlehead{献给我自己刷题的时光}
+\title{Leetcode Book：个人的刷题笔记}
+\author[佘嘉洛]{佘嘉洛\thanks{一个一直寻找着救赎之路的普通人}}
+\date{\today}
 
 \frontmatter
+
+\makeatletter
+\uppertitleback{\@titlehead} % Header
+
+\lowertitleback{
+	\textbf{开源免费}\\
+  本书完全开源和免费，只要你遵守下方的协议，你可以自由地使用本书的内容。
+
+  如果你发现任何的问题，请向仓库提交issue或者pull request。
+  \\\url{https://github.com/shejialuo/LeetcodeBook}
+
+  \medskip
+
+  \textbf{协议}\\
+  \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+  International License.}
+
+  \medskip
+
+  \textbf{鸣谢} \\
+  十分感谢\LaTeX 模板作者\href{fmarotta}{https://github.com/fmarotta/}
+
+  其开源代码位于
+  \\\url{https://github.com/fmarotta/kaobook}
+  \medskip
+
+}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+
+\dedication{
+  献给我的母亲和父亲，感谢他们给予我的一切。
+}
+
 \maketitle
+
+\subfile{src/preface/preface.tex}
+\index{perface}
+
+\begingroup
+
+\setlength{\textheight}{230\hscale}
+
+\etocstandarddisplaystyle
+\etocstandardlines
 \tableofcontents
 
-
+\endgroup
 
 \mainmatter
+
+\setchapterstyle{kao}
 
 \subfile{src/chapter_1/two_pointer.tex}
 
