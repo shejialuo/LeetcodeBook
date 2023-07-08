@@ -1,0 +1,251 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+\setchapterpreamble[u]{\margintoc}
+
+\chapter{链表}
+
+链表是最为基本的数据结构，其题目求解过程无非在于画图寻找规律，确定好循环不变量，
+进而求解问题。
+
+\section{双指针解决链表问题}
+
+双指针能解决许多链表中的经典问题，比如链表的中点，链表的倒数第k个节点等等。其
+核心的思路在于，链表无法像数组一样通过下标访问。故通过确定距离或者使用快慢指针
+来解决问题。
+
+\subsection{\href{https://leetcode.cn/problems/middle-of-the-linked-list/}{链表的中间结点}}
+
+最简单的方法，莫过于遍历链表，得到链表的长度，然后再遍历一次，找到中间节点。然而
+我们可以使用两个指针，一个为\verb|slow|，一个为\verb|fast|，\verb|slow|每次
+走一步，\verb|fast|每次走两步，当\verb|fast|走到链表尾部时，\verb|slow|刚好
+位于链表的中间位置。
+
+当链表的长度是奇数时，其过程如下图所示。
+
+\begin{itemize}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+
+
+      \coordinate (slow) at (0,1);
+      \coordinate (fast) at (0.2,1);
+
+      \draw [arrow] (slow) -- (node1.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (0.2,0.24) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+
+    \end{tikzpicture}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+
+      \coordinate (slow) at (2,1);
+      \coordinate (fast) at (4,1);
+
+      \draw [arrow] (slow) -- (node2.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (node3.north) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+
+    \end{tikzpicture}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+
+      \coordinate (slow) at (2,1);
+      \coordinate (fast) at (5,1);
+
+      \draw [arrow] (slow) -- (node2.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (5, 0) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+
+    \end{tikzpicture}
+\end{itemize}
+
+当链表的长度是偶数时，其过程如下图所示。
+
+\begin{itemize}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+      \node (node4) [node, right of=node3] {Node 4};
+
+      \coordinate (slow) at (0,1);
+      \coordinate (fast) at (0.2,1);
+
+      \draw [arrow] (slow) -- (node1.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (0.2,0.24) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+      \draw [arrow] (node3) -- (node4);
+    \end{tikzpicture}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+      \node (node4) [node, right of=node3] {Node 4};
+
+      \coordinate (slow) at (2,1);
+      \coordinate (fast) at (4,1);
+
+      \draw [arrow] (slow) -- (node2.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (node3.north) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+      \draw [arrow] (node3) -- (node4);
+
+    \end{tikzpicture}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+      \node (node4) [node, right of=node3] {Node 4};
+
+      \coordinate (slow) at (4,1);
+      \coordinate (fast) at (7,1);
+
+      \draw [arrow] (slow) -- (node3.north) node[midway,above left] {slow};
+      \draw [arrow] (fast) -- (7, 0) node[midway,above right] {fast};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+      \draw [arrow] (node3) -- (node4);
+
+    \end{tikzpicture}
+\end{itemize}
+
+通过上述的描述，我们已经可以解决这个问题，给出如下的代码。\sidenote{实际上，对于这个问题，我们可以给出严格
+的数学证明。无论链表的长度是奇数还是偶数，$slow$指针最多移动$\rfloor n / 2 \rfloor$次。
+当$n$为偶数时，$fast$指针需要移动$n - 1$个元素，$n - 1$必为奇数，故其必然会在最后一次循环
+移动到链表的倒数第二个元素上。此时其移动了$n / 2 - 1$次，然后进行最后一次循环，$slow$也会移动，故
+总共移动$ (n - 1) / 2$次。当$n$为奇数时，$fast$指针需要移动$n - 1$个元素，$n - 1$必然为偶数，故其必然会在最后一次循环
+移动到链表的最后一个元素上。然后进行最后一次循环，$slow$不会移动，故总共移动$(n - 1) / 2$次。}
+
+\lstinputlisting[language=C++]{code/middle-of-the-linked-list.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/remove-nth-node-from-end-of-list/}{删除链表的倒数第N个节点}}
+
+首先，要删除第$N$个节点，我们需要找到第$N - 1$个节点，然后将其指向第$N + 1$个节点。如果我们要完成
+一次遍历就要解决这个问题，那么在完成一次遍历后的终止条件是什么？也就是遇到尾节点（当然也可以是遇到
+空指针）。我们反推这个过程，假设我有一个指针已经指向了尾节点，我希望同时有个指针指向第$N - 1$个节点。
+那么这两个指针的距离必然为$N$。
+
+于是，我们假设这两个指针同时倒退，直到一个指针遇到头节点。那么把这个过程反过来，就是我们的解决方案。
+\sidenote{虽然这是一个简单的问题，但是在我看来这是一个思维方式，因为程序本质也是状态，当我们确定
+结束时的状态后，可以利用该信息去思考如何构造程序。}
+
+\begin{kaobox}[title=边界条件]
+  然而，我们必须思考一个边界条件，如果我们要删除头节点，我们该怎么办？解决这个问题最好的方法并不是
+  单独处理头节点，而是在头节点前面加一个虚拟节点，这样我们就可以统一处理了。
+\end{kaobox}
+
+\lstinputlisting[language=C++]{code/remove-nth-node-from-end-of-list.cpp}
+
+\subsection{环形链表问题}
+
+判断一个链表是否有环，涉及到了两个问题，\href{https://leetcode-cn.com/problems/linked-list-cycle/}
+{环形链表}和\href{https://leetcode-cn.com/problems/linked-list-cycle-ii/}{环形链表II}。这两个
+问题的解决思路是一样的，所以此处进行讲解。
+
+对于判断链表是否有环，我们可以采用快慢指针的方法。我们让两个指针同时从头节点出发，快指针每次移动两步，慢指针
+每次移动一步。如果链表有环，那么快指针必然会追上慢指针。如果链表没有环，那么快指针会先到达尾节点。\sidenote{
+这就和在操场里跑步一个道理}
+
+根据上述的思路，我们就可以得出如下的代码：
+
+\lstinputlisting[language=C++]{code/linked-list-cycle.cpp}
+
+然而，我们应该如何找到环的入口呢？作为一个从来没有刷过这个问题的人，很难通过数学证明的方式得出当快慢指针相遇时，
+将慢指针移动到头节点，然后快慢指针同时移动，当两个指针相遇时，就是环的入口。\sidenote{
+  要证明这个结论，还是相当简单的，假设头节点到环的入口的距离为$x$，环的入口到相遇点的距离为$y$，环的大小为$l$。
+  假设慢指针移动了$s$圈，快指针移动了$f$圈。那么我们可以得到如下的等式：
+  \begin{align*}
+  x + fl + y &= 2 * (x + sl + y) \\
+  x + y &= (f - 2s)l \\
+  y &= kl - x
+  \end{align*}
+  然后我们将慢指针移动到头节点，快慢指针同时移动，当两个指针相遇时，快指针正好移动了$k$圈，也就是环的入口。
+}
+
+如果是按照正常的思维该怎么去做这个问题呢？我们可以用一个哈希表来存储已经访问过的节点，当我们访问到一个节点时，
+我们就去哈希表中查找是否存在该节点，如果存在，那么就是环的入口，如果不存在，那么就将该节点加入到哈希表中。
+\sidenote{这不是最高效的做法，但这是最符合思维的做法。}
+
+\lstinputlisting[language=C++]{code/linked-list-cycle-ii.cpp}
+
+\section{链表基础操作}
+
+链表的基础操作有许多，例如反转链表，合并有序链表等。通过这些基础的操作，我们可以去解决更加复杂的问题。
+
+\subsection{\href{https://leetcode.cn/problems/reverse-linked-list/}{反转链表}}
+
+如何去反转一个链表呢？最粗暴的方式就是遍历链表然后使用一个数组记录链表的值，最后使用头插法构建一个
+新的链表即可。
+
+然而，我们可以更加聪明一点，链表的问题解决方式用于是画图，并确定循环不变量。\sidenote{可能许多题目的解法
+都不会告诉你去确定循环不变量，然而确定循环不变量是一个很重要的步骤，是保证我们写代码时不出错的一个很关键
+要素。}
+
+\begin{itemize}
+  \item
+    \begin{tikzpicture}[node distance=2cm]
+      \node (node1) [node] {Node 1};
+      \node (node2) [node, right of=node1] {Node 2};
+      \node (node3) [node, right of=node2] {Node 3};
+
+      \coordinate (prev) at (0,1);
+      \coordinate (cur) at (2,1);
+
+      \draw [arrow] (prev) -- (node1.north) node[midway,above left] {prev};
+      \draw [arrow] (cur) -- (node2.north) node[midway,above right] {cur};
+
+      \draw [arrow] (node1) -- (node2);
+      \draw [arrow] (node2) -- (node3);
+
+    \end{tikzpicture}
+  \item
+  \begin{tikzpicture}[node distance=2cm]
+    \node (node1) [node] {Node 1};
+    \node (node2) [node, right of=node1] {Node 2};
+    \node (node3) [node, right of=node2] {Node 3};
+
+    \coordinate (prev) at (2,1);
+    \coordinate (cur) at (4,1);
+
+    \draw [arrow] (prev) -- (node2.north) node[midway,above left] {prev};
+    \draw [arrow] (cur) -- (node3.north) node[midway,above right] {cur};
+
+    \draw [arrow] (node2) -- (node1);
+    \draw [arrow] (node2) -- (node3);
+
+  \end{tikzpicture}
+\end{itemize}
+
+通过上述分析可知，我们可以确定循环不变量为在遍历过程中，已反转部分的链表一定是\verb|prev|指针所指
+向的链表，而当前节点一定是\verb|cur|指针所指向的节点：初始时，已反转部分为$nullptr$,
+那么$prev = nullptr$。\sidenote{我们其实通过循环不变量确定了一个十分关键的要素，也就是$prev$的
+初始值。}。故我们可以给出如下的代码：
+
+\lstinputlisting[language=C++]{code/reverse-linked-list.cpp}
+
+\end{document}

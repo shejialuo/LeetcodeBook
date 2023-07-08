@@ -4,6 +4,11 @@
 \usepackage{xeCJK}
 \usepackage{subfiles}
 \usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary {angles,calc,quotes,tikzmark, shapes, arrows}
+
+\tikzstyle{node} = [rectangle, rounded corners, minimum width=1.5cm, minimum height=0.5cm,text centered, draw=black, fill=white]
+\tikzstyle{arrow} = [thick,->,>=stealth]
 
 \usepackage[framed=true]{kaotheorems}
 
@@ -101,5 +106,6 @@
 \setchapterstyle{kao}
 
 \subfile{src/chapter_1/two_pointer.tex}
+\subfile{src/chapter_2/linked_list.tex}
 
 \end{document}
