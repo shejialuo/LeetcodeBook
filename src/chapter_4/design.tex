@@ -1,0 +1,153 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+\setchapterpreamble[u]{\margintoc}
+
+\chapter{设计数据结构}
+
+设计数据结构是一个在我看来比算法都要重要的能力，合理地考虑数据结构的设计，可以让我们的算法更加简洁，更加
+高效。本章主要记录Leetcode中一些设计数据结构的题目。
+
+\section{缓存类问题}
+
+\subsection{\href{https://leetcode.cn/problems/lru-cache/}{LRU缓存}}
+\label{subsec:lru-cache}
+
+LRU缓存的思想十分简单，就是当缓存满了的时候，我们需要将最近最少使用的数据删除。因此我们需要一个数据结构
+能够表示最少，一种简单的方式就是使用链表，链表的头部表示最近使用的数据，链表的尾部表示最近最少使用的数据。
+当我们需要删除数据的时候，只需要删除链表的尾部即可。当我们需要插入数据的时候，只需要将数据插入到链表的头部
+即可。如果数据已经存在，我们需要将数据移动到链表的头部。
+
+然而，该题目还涉及到了数据的查找，因此我们需要一个数据结构能够快速地查找到数据。这里我们可以使用哈希表来
+实现。
+
+最棘手的是，哈希表应该保存什么值，仔细的一思考，我们应该存储链表的迭代器，这样我们就能快速访问其值。当我们
+从链表移除最短使用的数据的时候，我们需要从哈希表中删除其迭代器，我们需要其键值，所以我们需要在链表中存储
+其键值。
+
+\begin{lstlisting}[language=C++,style=kaolstplain]
+class LRUCache {
+private:
+  int size;
+  list<pair<int, int>> items{};
+  unordered_map<int, typename list<pair<int, int>>::iterator> keyToIterators{};
+};
+\end{lstlisting}
+
+剩下的算法就十分简单了，可见数据结构的设计是多么的重要。
+
+\lstinputlisting[language=C++]{code/lru-cache.cpp}
+
+\subsection{LRU-K缓存}
+
+尽管Leetcode上没有LRU-K缓存的题目，但我个人认为实现LRU-K是进一步实现LFU缓存的基础。LRU-K缓存
+维护一个大小为$n$的缓存，其中每个缓存条目都有一个关联的计数器。每当一个缓存条目被访问时，它的计数器
+就会增加1。在进行缓存淘汰时，算法会选择计数器最小的$K$个条目中最久未被使用的条目进行淘汰。
+
+我们可以使用两个链表来实现LRU-K缓存，一个链表用于维护访问次数大于等于$K$的缓存条目，另一个链表用于
+维护访问次数小于$K$的缓存条目。当需要淘汰缓存条目时，使用LRU淘汰访问次数小于$K$的链表中的条目，然后
+再在访问次数大于等于$K$的链表中使用LRU算法淘汰最长时间未被使用的条目。因此，我们可以定义如下的
+数据结构：
+
+可以看见唯一的区别在于，我们需要处理当访问次数从小于$K$变为大于等于$K$的情况，这时我们需要将数据从
+小于$K$的链表中移除，然后插入到大于等于$K$的链表中。并对大于等于$K$的链表进行LRU淘汰。同时，我们
+需要更改。其余的情况，均可以使用LRU算法来处理\sidenote{
+这个问题交给读者自己思考。此处仅仅定义基本的数据结构}。
+
+\begin{lstlisting}[language=C++,style=kaolstplain]
+class LRUKCache {
+private:
+  struct Data {
+    int key;
+    int value;
+    int counter{1};
+
+    Data() = default;
+    Data(int key, int value) : key(key), value(value) {}
+  };
+
+  int size;
+  int k;
+  list<Data> itemsLessThanK{};
+  list<Data> itemsGreaterOrEqualToK{};
+  unordered_map<int, list<Data>::iterator> lessThanKIter{};
+  unordered_map<int, list<Data>::iterator> greaterOrEqualKIter{};
+};
+\end{lstlisting}
+
+\subsection{\href{https://leetcode-cn.com/problems/lfu-cache/}{LFU缓存}}
+
+LFU缓存，淘汰最少使用的数据。然而，如何最少呢？我们可以对每一个频率维护一个链表，链表的头部表示最近
+使用的数据，链表的尾部表示最近最少使用的数据。当我们需要删除数据的时候，只需要删除链表的尾部即可。当
+我们需要插入数据的时候，只需要将数据插入到链表的头部即可。如果数据已经存在，我们需要将当前链表的节点
+移动到下一个频率对应的链表的头部\sidenote{你可能或许有点明白为什么我要介绍LRU-K了。其算法虽然不一样，
+但是实现的思想高度一致。}。
+
+然后我们仍然需要思考如何有效地构建数据结构，首先是需要定义\texttt{info}的数据结构，其应该包含类似
+于\ref{subsec:lru-cache}的数据结构。然后我们仍然可以类似定义哈希表。最关键的问题是我们需要保存
+一系列的链表：
+
+\begin{lstlisting}[language=C++,style=kaolstplain]
+class LFUCache {
+  private:
+    class Info {
+    private:
+      int key;
+      int value;
+      int counter;
+
+    public:
+      Info() = delete;
+      Info(int k, int v) : key{k}, value{v}, counter{1} {}
+
+      int getKey() const { return key; }
+
+      void setValue(int v) { value = v; }
+      int getValue() const { return value; }
+
+      int plusCounter() {
+        counter++;
+        return counter;
+      }
+    };
+
+    vector<list<Info>> infos{};
+
+    unordered_map<int, list<Info>::iterator> keysToIterators{};
+
+    int size;
+    int minFrequency{1};
+};
+\end{lstlisting}
+
+实现的逻辑稍微复杂了一些，但是抓住本质就行了。我认为本质就是对链表进行移动。举个例子。
+
+\begin{example}
+  假设我们有如下的数据：
+
+  \begin{itemize}
+    \item count 1 : a -> b -> c.
+    \item count 2 : d -> e.
+    \item count 3 : ...
+  \end{itemize}
+
+  当我们使用\texttt{get(a)}时，我们需要将\texttt{a}从count 1的链表中移除，然后插入到count 2的链表。
+
+
+  \begin{itemize}
+    \item count 1 : b -> c.
+    \item count 2 : a -> d -> e.
+    \item count 3 : ...
+  \end{itemize}
+
+\end{example}
+
+\lstinputlisting[language=C++]{code/lfu-cache.cpp}
+
+\begin{kaobox}[title=类似题目]
+  实际上，当你完成了这个题，你就能够十分简单地完成\href{https://leetcode.cn/problems/all-oone-data-structure/}{
+    全 O(1) 的数据结构}
+\end{kaobox}
+
+\end{document}

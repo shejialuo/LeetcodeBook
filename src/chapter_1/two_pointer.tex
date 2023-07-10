@@ -25,13 +25,13 @@
 满足特定条件的元素对的问题}
 
 在这个过程中，我们可以确定一个循环不变量：\textbf{在数组中，左侧指针之前的所有元素都小于等于
-右侧指针之后的所有元素}。对指针\verb|start|和\verb|end|，我们可以得到其值
+右侧指针之后的所有元素}。对指针\texttt{start}和\texttt{end}，我们可以得到其值
 
 $$
 sum = nums[start] + nums[end]
 $$
 
-如果$sum$小于目标值，那么我们就需要增大$sum$，所以我们需要增大\verb|start|，反之亦然。
+如果$sum$小于目标值，那么我们就需要增大$sum$，所以我们需要增大texttt{start}，反之亦然。
 我们可以简单地写出如下的代码：
 
 \lstinputlisting[language=C++]{code/two_sum.cpp}

@@ -16,10 +16,11 @@
 来解决问题。
 
 \subsection{\href{https://leetcode.cn/problems/middle-of-the-linked-list/}{链表的中间结点}}
+\label{subsec:middle-of-the-linked-list}
 
 最简单的方法，莫过于遍历链表，得到链表的长度，然后再遍历一次，找到中间节点。然而
-我们可以使用两个指针，一个为\verb|slow|，一个为\verb|fast|，\verb|slow|每次
-走一步，\verb|fast|每次走两步，当\verb|fast|走到链表尾部时，\verb|slow|刚好
+我们可以使用两个指针，一个为\texttt{slow}，一个为\texttt{fast}，\texttt{slow}每次
+走一步，\texttt{fast}每次走两步，当\texttt{fast}走到链表尾部时，\texttt{slow}刚好
 位于链表的中间位置。
 
 当链表的长度是奇数时，其过程如下图所示。
@@ -135,11 +136,12 @@
 \end{itemize}
 
 通过上述的描述，我们已经可以解决这个问题，给出如下的代码。\sidenote{实际上，对于这个问题，我们可以给出严格
-的数学证明。无论链表的长度是奇数还是偶数，$slow$指针最多移动$\rfloor n / 2 \rfloor$次。
-当$n$为偶数时，$fast$指针需要移动$n - 1$个元素，$n - 1$必为奇数，故其必然会在最后一次循环
-移动到链表的倒数第二个元素上。此时其移动了$n / 2 - 1$次，然后进行最后一次循环，$slow$也会移动，故
-总共移动$ (n - 1) / 2$次。当$n$为奇数时，$fast$指针需要移动$n - 1$个元素，$n - 1$必然为偶数，故其必然会在最后一次循环
-移动到链表的最后一个元素上。然后进行最后一次循环，$slow$不会移动，故总共移动$(n - 1) / 2$次。}
+的数学证明。无论链表的长度是奇数还是偶数，\texttt{slow}指针最多移动$\rfloor n / 2 \rfloor$次。
+当$n$为偶数时，\texttt{fast}指针需要移动$n - 1$个元素，$n - 1$必为奇数，故其必然会在最后一次循环
+移动到链表的倒数第二个元素上。此时其移动了$n / 2 - 1$次，然后进行最后一次循环，\texttt{slow}也会移动，故
+总共移动$ (n - 1) / 2$次。当$n$为奇数时，\texttt{fast}指针需要移动$n - 1$个元素，$n - 1$必然为偶数，
+故其必然会在最后一次循环移动到链表的最后一个元素上。然后进行最后一次循环，\texttt{slow}不会移动，故总共
+移动$(n - 1) / 2$次。}
 
 \lstinputlisting[language=C++]{code/middle-of-the-linked-list.cpp}
 
@@ -195,9 +197,37 @@
 
 \section{链表基础操作}
 
-链表的基础操作有许多，例如反转链表，合并有序链表等。通过这些基础的操作，我们可以去解决更加复杂的问题。
+链表的基础操作有许多，例如删除元素，反转链表和合并有序链表等。通过这些基础的操作，我们可以去解决更加复杂的问题。
+
+\subsection{\href{https://leetcode-cn.com/problems/remove-linked-list-elements/}{移除链表元素}}
+
+移除链表元素，我们可以使用一个虚拟节点来统一处理头节点的问题。然后我们只需要遍历链表，检测当前节点的下一个节点
+是否为要删除的节点，如果是，那么就将当前节点的下一个节点指向下下个节点，否则就继续遍历。然而，我们需要注意一个
+边界条件。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {1};
+  \node (node2) [node, right of=node1] {2};
+  \node (node3) [node, right of=node2] {2};
+
+  \coordinate (ptr) at (0,1);
+  \coordinate (next) at (2,1);
+
+  \draw [arrow] (ptr) -- (node1.north) node[midway,above left] {ptr};
+  \draw [arrow] (next) -- (node2.north) node[midway,above right] {ptr->next};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+
+\end{tikzpicture}
+
+在上图中，我们需要删除值为2的节点，当我们删除完第一个值为2的节点后，我们不能移动\texttt{ptr}指针
+需要继续检测\texttt{ptr->next}是否为要删除的节点。
+
+\lstinputlisting[language=C++]{code/remove-linked-list-elements.cpp}
 
 \subsection{\href{https://leetcode.cn/problems/reverse-linked-list/}{反转链表}}
+\label{subsec:reverse-linked-list}
 
 如何去反转一个链表呢？最粗暴的方式就是遍历链表然后使用一个数组记录链表的值，最后使用头插法构建一个
 新的链表即可。
@@ -241,11 +271,485 @@
   \end{tikzpicture}
 \end{itemize}
 
-通过上述分析可知，我们可以确定循环不变量为在遍历过程中，已反转部分的链表一定是\verb|prev|指针所指
-向的链表，而当前节点一定是\verb|cur|指针所指向的节点：初始时，已反转部分为$nullptr$,
-那么$prev = nullptr$。\sidenote{我们其实通过循环不变量确定了一个十分关键的要素，也就是$prev$的
-初始值。}。故我们可以给出如下的代码：
+通过上述分析可知，我们可以确定循环不变量为在遍历过程中，已反转部分的链表一定是\texttt{prev}指针所指
+向的链表，而当前节点一定是\texttt{cur}指针所指向的节点：初始时，已反转部分为\texttt{nullptr},
+那么\texttt{prev = nullptr}。\sidenote{我们其实通过循环不变量确定了一个十分关键的要素，也就是
+\texttt{prev}的初始值。}。故我们可以给出如下的代码：
 
 \lstinputlisting[language=C++]{code/reverse-linked-list.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/merge-two-sorted-lists/}{合并两个有序链表}}
+\label{subsec:merge-two-sorted-lists}
+
+如果你会基于数组的归并排序，那么这个题也就是显而易见的做法了。我们可以使用两个指针分别指向两个链表的头节点，
+然后比较两个指针所指向的节点的值，将较小的节点加入到新的链表中，然后将较小节点的指针向后移动一位，直到
+其中一个指针为空，然后将另一个指针所指向的链表加入到新的链表中即可。为了方便，我们仍然添加一个虚拟头节点
+\sidenote{这也是在链表中常用技巧之一，通过添加虚拟的头节点，让代码更加优雅。}。
+
+\lstinputlisting[language=C++]{code/merge-two-sorted-lists.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/remove-duplicates-from-sorted-list/}{删除排序链表中的重复元素}}
+
+这个题很简单，我们只需要画图就能够得到这个问题的答案。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {1};
+  \node (node2) [node, right of=node1] {1};
+  \node (node3) [node, right of=node2] {1};
+  \node (node4) [node, right of=node3] {2};
+
+  \coordinate (ptr) at (0,1);
+  \coordinate (next) at (2,1);
+
+  \draw [arrow] (ptr) -- (node1.north) node[midway,above left] {ptr};
+  \draw [arrow] (next) -- (node2.north) node[midway,above right] {next};
+  \draw [arrow] (2,0.5) -- (6,0.5) node[midway,above] {移动};
+  \draw [arrow, color = red] (6,1) -- (node4.north) node[midway,above right] {next};
+
+
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+
+\end{tikzpicture}
+
+于是我们可以得到如下的代码：
+
+\lstinputlisting[language=C++]{code/remove-duplicates-from-sorted-list.cpp}
+
+当解决完这个问题，我们就可以轻而易举地解决\href{https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/}
+{删除排序链表中的重复元素 II}了。本质都是一样的，唯一的变化在于需要删除所有的重复元素，而不是只保留一个。
+
+\subsection{\href{https://leetcode.cn/problems/reorder-list/}{重排链表}}
+
+这个题，看似不好下手，实际上思路很简单。我们只需要找到链表的中点，然后切断链表。将链表的后半部分
+进行反转。然后将两个链表进行合并即可。
+
+\begin{example}
+  假设链表为$1 \to 2 \to 3 \to 4$。我们首先找到链表的中点，即$2$。然后将链表切断，
+  得到两个链表$1 \to 2$和$3 \to 4$。 然后将后半部分进行反转，得到$4 \to 3$。然后将
+  两个链表进行合并，得到$1 \to 4 \to 2 \to 3$。
+\end{example}
+
+可见，我们利用了\ref{subsec:middle-of-the-linked-list}和\ref{subsec:reverse-linked-list}的
+方法，就可以轻松解决这个问题。
+
+\section{链表复杂操作}
+
+\subsection{\href{https://leetcode.cn/problems/palindrome-linked-list/}{回文链表}}
+
+我们该如何判断一个链表是否是回文链表呢？我们可以使用快慢指针找到链表的中间节点，然后将后半部分的链表反转，
+最后比较前半部分和后半部分的链表是否相同即可。可见这个问题本质就是\ref{subsec:middle-of-the-linked-list}
+和\ref{subsec:reverse-linked-list}的结合。
+
+我们只需要处理的是当链表长度为奇数时，我们需要将中间节点的下一个节点作为后半部分的链表的头节点，而当
+链表长度为偶数时，我们需要将中间节点作为后半部分的链表的头节点。如下图所示：
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {1};
+  \node (node2) [node, right of=node1] {2};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {4};
+
+  \draw [arrow] (4,1) -- (node3.north) node[midway,above left] {mid};
+
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {1};
+  \node (node2) [node, right of=node1] {2};
+  \node (node3) [node, right of=node2] {3};
+
+  \draw [arrow] (2,1) -- (node2.north) node[midway,above left] {mid};
+
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+
+\end{tikzpicture}
+
+于是我们可以给出如下的代码，注意我们需要考虑只有一个节点的情况，这是一个重要的边界条件。
+
+\begin{marginlisting}[-0.5cm]
+  \caption{边界条件}
+
+  \vspace{0.2cm}
+  \begin{lstlisting}[language=C++,style=kaolstplain]
+    if (head->next == nullptr) {
+      return true;
+    }
+  \end{lstlisting}
+\end{marginlisting}
+
+\lstinputlisting[language=C++]{code/palindrome-linked-list.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/partition-list/}{分隔链表}}
+\label{subsec:partition-list}
+
+数组中也存在这样的问题，我们需要将数组中的元素按照某个值分隔开，使得小于这个值的元素在前面，大于
+这个值的元素在后面。然而链表的分割操作要比数组的分割操作要简单得多，原因在于链表的数据结构本身就是
+离散的，我们只需要将小于这个值的节点和大于这个值的节点分别放到两个链表中，然后将两个链表连接起来即可。
+
+显然我们可以创建两个虚拟的头节点，然后遍历链表，将小于这个值的节点放到第一个链表中，将大于这个值的
+节点放到第二个链表中，最后将两个链表连接起来即可\sidenote{一旦我们需要创建一个新的链表，最简单的
+做法就是定义一个虚拟的头节点。}。
+
+\lstinputlisting[language=C++]{code/partition-list.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/reverse-linked-list-ii/}{反转链表 II}}
+
+这个问题和\ref{subsec:reverse-linked-list}的区别在于我们需要反转链表的一部分，而不是整个链表。
+我们仍然通过画图解决这个问题，如下图所示。为了反转从\texttt{start}到\texttt{end}的链表，我们
+需要找到\texttt{start}的前一个节点和\texttt{end}的后一个节点。然后我们需要将\texttt{start}到
+\texttt{end}的链表反转，反转的过程和反转整个链表的过程没有任何区别。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {1};
+  \node (node2) [node, right of=node1] {2};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {4};
+  \node (node5) [node, right of=node4] {5};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+
+  \draw [arrow, color=red] (0, 1) -- (node1.north) node[midway,above left] {start};
+  \draw [arrow] (2, 1) -- (node2.north) node[midway,above left] {pre};
+  \draw [arrow] (4, 1) -- (node3.north) node[midway,above left] {cur};
+  \draw [arrow, color=red] (8, 1) -- (node5.north) node[midway,above left] {end};
+\end{tikzpicture}
+
+进行反转后，我们并没有得到我们想要的结果，此时我们得到的结果如下图所示。此时我们需要将
+\texttt{start->next}指向\texttt{end}，将\texttt{pre->next}指向\texttt{end}，这样
+我们就得到了想要的结果。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {3};
+  \node (node3) [node, right of=node2] {2};
+  \node (node4) [node, above of=node2] {1 start};
+  \node (node5) [node, above of=node1] {5 end};
+
+  \draw [arrow] (node4) -- (node3);
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+
+  \draw [arrow] (0, 1) -- (node1.north) node[midway,above left] {pre};
+
+\end{tikzpicture}
+
+于是我们可以写出如下的代码\sidenote{在这个问题中，我们仍然可能会修改头节点，故我们继续使用
+虚拟节点来简化代码}。
+
+\lstinputlisting[language=C++]{code/reverse-linked-list-ii.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/reverse-nodes-in-k-group/}{K个一组翻转链表}}
+
+这个问题和\ref{subsec:reverse-linked-list}的区别在于我们需要使用循环不断地反转链表。然而
+所有的核心思路仍然是一样的。这儿我们举个例子来说明这个问题。
+
+\begin{example}
+  假设链表为$1 \to 2 \to 3 \to 4$。$k = 2$。我们仍然创建一个虚拟的头节点，即
+  链表为$aux \to 1 \to 2 \to 3 \to 4$。 我们首先反转$1 \to 2$，得到
+  $aux \to 2 \to 1 \to 3 \to 4$。 然后我们需要把循环的指针指向$1$，把$1$作为下一次
+  反转的\texttt{start}。
+\end{example}
+
+然后我们就能够写出如下的代码\sidenote{你可能会发现，我们没必要每次都去寻找\texttt{end}变量，我们
+可以直接在循环里面反转链表，但是我认为这样的书写是能够简化问题的。当然，如果为了效率而言，肯定是
+直接在循环里面反转链表最好。但是这样的复杂度也会变高，因为对于最后一组其长度可能小于$k$，此时并不能
+进行反转，需要进行额外的处理。}：
+
+\lstinputlisting[language=C++]{code/reverse-nodes-in-k-group.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/merge-k-sorted-lists/}{合并K个升序链表}}
+\marginnote{
+这个问题实际上是数据库原理里面一个很经典的问题，Two-Pass Algorithms Based on Sorting。首先从磁盘
+里面读取数据到内存中，然后进行排序，最后将排序后的数据写回到磁盘中。当把所有的数据都写到磁盘后，然后
+将其读取到$M - 1$个内存中，然后用1个内存来做输出。其本质也就是合并K个升序链表。
+}
+
+这个问题和\ref{subsec:merge-two-sorted-lists}的区别在于我们需要合并$K$个链表。所以我们能够使用十分
+暴力的方法进行求解，即每次都合并两个链表，然后将合并后的链表和下一个链表进行合并，直到合并完所有的链表。在
+这个问题中，我们复用的代码，及\ref{subsec:merge-two-sorted-lists}中的\verb|mergeTwoLists|函数。
+我们可以给出如下的暴力解法：
+
+\lstinputlisting[language=C++]{code/merge-k-sorted-lists-brute.cpp}
+
+然而，我们可以直接使用归并排序来降低时间复杂度。我们可以将所有的链表分成两组，然后对每一组进行合并，然后
+再将两组合并。这样我们就能够得到最终的结果。我们可以给出如下的代码：
+
+\lstinputlisting[language=C++]{code/merge-k-sorted-lists-divide.cpp}
+
+\begin{kaobox}[title=使用优先队列]
+  这个问题也可以使用优先队列来进行求解。我们可以将所有的链表的头节点放入优先队列中，然后每次取出最小的节点，
+  然后将其下一个节点放入优先队列中。这样我们就能够得到最终的结果。但是对于数据库的使用而言，这个方法并不
+  适用，因为优先队列的空间复杂度是$O(N)$，而归并排序的空间复杂度是$O(1)$。
+\end{kaobox}
+
+\subsection{\href{https://leetcode.cn/problems/insertion-sort-list/}{对链表进行插入排序}}
+\label{subsec:insertion-sort-list}
+
+链表实现插入排序的操作本质是和数组实现插入排序是一样的。我们确定如下的循环不变量。在循环的每个迭代中，
+链表的前面部分已经排好序，而当前节点之前的所有节点已经按照顺序插入到合适的位置上。
+
+\begin{example}
+  假设链表为$4 \to 2 \to 1 \to 3$。我们首先创建一个虚拟的头节点其值为\texttt{int}类型的最小值，
+  即链表为$aux \to 4 \to 2 \to 1 \to 3$。我们首先需要确定当前节点\texttt{cur}即指向4，然后确定
+  下一个节点即\texttt{next}指向2。然后我们需要找到4的插入位置，即从排序好的头节点开始，找到第一个
+  大于等于4的节点，由于需要插入，我们需要使用一个指针\texttt{pre}记录前一个节点。
+  然后不断地循环这个操作。
+\end{example}
+
+这样，我们就可以写出如下的代码：
+
+\lstinputlisting[language=C++]{code/insertion-sort-list.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/sort-list/}{排序链表}}
+
+对一个链表进行排序，我们已经在\ref{subsec:insertion-sort-list}中基于插入排序实现了对链表的排序。
+当然，对一个链表排序可以使用很多的方法，我们也可以使用选择排序等，然而为了提高效率我们应该仅仅考虑
+
+\begin{itemize}
+  \item 归并排序
+  \item 快速排序
+\end{itemize}
+
+我们首先考虑归并排序的使用，实际上链表的归并排序和数组的归并排序是一致的。我们只需要每次找到链表的中点，
+将其切割为两个链表，然后不断地重复，最终合并两个有序链表，从而得到答案。这是自顶向下的方法，这个方法
+很方便书写。
+
+然而，由于链表是离散的，相较于数组，其可以更加方便的自底向上归并。其思路很简单，首先按照数目为$k = 1$
+对链表进行分组，然后两两对链表使用\ref{subsec:merge-two-sorted-lists}介绍的合并有序链表的方法。
+然后将合并好的链表连接起来。然后$k$乘以2，直到其小于链表的长度。
+
+这个过程并不如上面描述的那么简单。我们通过绘图来理解整个执行过程。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {5};
+  \node (node2) [node, right of=node1] {4};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {2};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+\end{tikzpicture}
+
+首先是要对链表进行分组，这里我们分组的数目为1，即每个链表只有一个节点。我们需要切断链表与链表之间
+的连接。我们直接在循环分组的时候切割节点。然后我们调用合并有序链表的函数，将两个有序链表合并为一个
+有序链表。并返回合并好的链表的头节点\texttt{start}和尾节点\texttt{end}，那么我们只需要将
+\texttt{end->next}指向下一个两两合并好的链表的头节点\texttt{nextStart}即可。如下图所示，我们
+按照分组数目的大小，找到两个节点，切断其连接，然后将其合并，然后将其连接起来。返回
+\texttt{start}和\texttt{end}。然后，我们再次寻找两个节点，将其合并，然后将其连接起来，其
+返回\texttt{nextStart}和\texttt{nextEnd}。我们只需要将\texttt{end->next}指向
+\texttt{nextStart}即可。然后不断重复这个过程。然而，最开始我们没有\texttt{end}指针，所以我们设置
+一个虚拟的头节点，使得代码更加优雅\sidenote{一旦我们要涉及到改变头节点，我们就一定要
+思考能不能添加一个虚拟的头节点。}。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {5};
+  \node (node2) [node, right of=node1] {4};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {2};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=red] (0, 1) -- (node1.north) node[midway,above left] {l1};
+  \draw [arrow, color=red] (2, 1) -- (node2.north) node[midway,above left] {l2};
+  \draw [arrow] (4, 1) -- (node3.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {5};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {2};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=red] (0, 1) -- (node1.north) node[midway,above left] {start};
+  \draw [arrow, color=red] (2, 1) -- (node2.north) node[midway,above left] {end};
+  \draw [arrow] (4, 1) -- (node3.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {5};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {2};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=red] (2, 1) -- (node2.north) node[midway,above left] {用于连接的指针1};
+  \draw [arrow] (4, 1) -- (node3.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {5};
+  \node (node3) [node, right of=node2] {3};
+  \node (node4) [node, right of=node3] {2};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=blue] (2, 1) -- (node2.north) node[midway,above left] {用于连接的指针1};
+  \draw [arrow, color=red] (4, 1) -- (node3.north) node[midway,above left] {l1};
+  \draw [arrow, color=red] (6, 1) -- (node4.north) node[midway,above left] {l2};
+  \draw [arrow] (8, 1) -- (node5.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node1) -- (node2);
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {5};
+  \node (node3) [node, right of=node2] {2};
+  \node (node4) [node, right of=node3] {3};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=blue] (2, 1) -- (node2.north) node[midway,above left] {用于连接的指针1};
+  \draw [arrow, color=red] (4, 1) -- (node3.north) node[midway,above left] {start};
+  \draw [arrow, color=red] (6, 1) -- (node4.north) node[midway,above left] {end};
+  \draw [arrow] (8, 1) -- (node5.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node3) -- (node4);
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {4};
+  \node (node2) [node, right of=node1] {5};
+  \node (node3) [node, right of=node2] {2};
+  \node (node4) [node, right of=node3] {3};
+  \node (node5) [node, right of=node4] {1};
+
+  \draw [arrow, color=blue] (2, 1) -- (node2.north) node[midway,above left] {用于连接的指针1};
+  \draw [arrow, color=red] (4, 1) -- (node3.north) node[midway,above left] {start};
+  \draw [arrow, color=red] (6, 1) -- (node4.north) node[midway,above left] {end};
+  \draw [arrow] (8, 1) -- (node5.north) node[midway,above left] {ptr};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow, color=red] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+
+\end{tikzpicture}
+
+根据上述的分析，我们重新整理在这个过程中，我们需要维持什么状态：
+
+\begin{itemize}
+  \item 用于每次指向两两合并的链表的返回的\texttt{end}指针，其初始值为\texttt{aux}。
+  \item 用于每次循环的链表的\texttt{ptr}指针，其初始值为\texttt{aux->next}。
+  \item 每次分组的两个链表的头节点\texttt{l1}和\texttt{l2}指针。
+  \item 利用一个\texttt{pre}指针，分割链表。
+\end{itemize}
+
+在清晰的思路下，我们就可以写出如下简洁的代码：
+
+\lstinputlisting[language=C++]{code/sort-list-divide.cpp}
+
+\begin{kaobox}[title=快速排序]
+  使用快速排序解决链表的排序思路是显而易见的，我们已经在\ref{subsec:partition-list}实现了
+  对链表的分隔，既然已经实现了分割，我们也能够很简单地在分隔链表的同时，将链表切割为两个部分。
+  然后返回其头节点和尾节点，这样我们就可以很方便地进行递归了。在我看来，其本质的思路与归并排序
+  没有很大的区别。
+\end{kaobox}
+
+\section{其他题目}
+
+\subsection{\href{https://leetcode.cn/problems/swap-nodes-in-pairs/}{两两交换链表中的节点}}
+
+既然要两两交换链表中的节点，需要对头节点进行变动，故我们定义一个虚拟的头节点，其指向真正的头节点。
+我们该如何去两两交换链表的节点呢？获得答案的方式永远是画图。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {aux};
+  \node (node2) [node, right of=node1] {1};
+  \node (node3) [node, right of=node2] {2};
+  \node (node4) [node, right of=node3] {3};
+  \node (node5) [node, right of=node4] {4};
+
+  \draw [arrow] (0, 1) -- (node1.north) node[midway,above left] {ptr};
+  \draw [arrow, color=red] (2, 1) -- (node2.north) node[midway,above left] {first};
+  \draw [arrow, color=red] (4, 1) -- (node3.north) node[midway,above left] {second};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+  \draw [arrow] (node4) -- (node5);
+
+\end{tikzpicture}
+
+显然，我们只需要让\texttt{aux->next}指向\texttt{second}，\texttt{first->next}
+指向\texttt{second->next}，\texttt{second->next}指向\texttt{first}即可。然后将
+\texttt{ptr}指针移动到\texttt{first}节点，继续循环即可。
+
+这样做是最显而易见的方法，但是我们思考能不能用二重指针或者指针的引用来解决这个问题呢？我们举个简单的例子
+来说明这个问题。如下图所示，我们只让\texttt{first}指向\texttt{second->next}，\texttt{second->next}
+指向\texttt{first}。
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {prev};
+  \node (node2) [node, right of=node1] {1};
+  \node (node3) [node, right of=node2] {2};
+  \node (node4) [node, right of=node3] {end};
+
+  \draw [arrow, color=red] (2, 1) -- (node2.north) node[midway,above left] {first};
+  \draw [arrow, color=red] (4, 1) -- (node3.north) node[midway,above left] {second};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node3);
+  \draw [arrow] (node3) -- (node4);
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[node distance=2cm]
+  \node (node1) [node] {prev};
+  \node (node2) [node, right of=node1] {1};
+  \node (node3) [node, below of=node1] {2};
+  \node (node4) [node, right of=node3] {end};
+
+  \draw [arrow] (node1) -- (node2);
+  \draw [arrow] (node2) -- (node4);
+  \draw [arrow] (node3) -- (node2);
+
+\end{tikzpicture}
+
+显然，我们需要让\texttt{prev}指向节点2。这个方法很简单，我们不需要修改指针的指向，而是修改
+本身的地址的值。这样我们就可以很方便地交换两个节点了\sidenote{这个方法虽然会让代码简单，
+但是会比较抽象，提供这个方法最重要的原因，这是解决链表问题的一种思维，能不能用二重指针解决问题呢？}。
+
+\lstinputlisting[language=C++]{code/swap-nodes-in-pairs.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/rotate-list/}{旋转链表}}
+
+首先要明确的一点，旋转是具有周期性的。这个周期性的长度就是链表的长度。所以我们第一步是需要对参数
+$k$进行处理，使得其小于链表的长度。然后我们需要找到旋转后的链表的头节点和尾节点，其中尾节点
+位于$length - k - 1$的位置，头节点位于$length - k$的位置。然后我们将尾节点的\texttt{next}
+指向\texttt{nullptr}，头节点的\texttt{next}指向原来的头节点，最后返回新的头节点即可。
+
+\lstinputlisting[language=C++]{code/rotate-list.cpp}
 
 \end{document}
