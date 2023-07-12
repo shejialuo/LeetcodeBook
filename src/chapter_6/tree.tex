@@ -1,0 +1,104 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+\setchapterpreamble[u]{\margintoc}
+
+\chapter{树}
+
+树是一个十分重要的数据结构，尤其以二叉树为例。本章主要记录如何解决一些树相关的问题。
+
+\section{二叉树的遍历}
+
+二叉树的遍历是一个十分重要的问题，我们可以使用递归的方式来解决这个问题，但是递归的方式十分的简单，本节
+主要介绍使用非递归的方式实现二叉树的遍历。
+
+\subsection{\href{https://leetcode.cn/problems/binary-tree-preorder-traversal/}
+{二叉树的前序遍历}}
+
+我们举一个简单的例子，来说明如何使用迭代的方式实现二叉树的前序遍历。如下图所示，我们首先需要访问
+根节点5，然后需要访问其左节点。这就来到了问题的关键地方，我们必须保存节点5，以便在遍历完其左孩子，
+能够访问其右孩子。对于每一个节点，我们都这样操作\sidenote{在此处，我忽略了细节的操作，实际上我认为
+我们掌握这个思维方式才是最重要的，这样我们就能写出循环了，因为每一个节点都是这样的。}。
+
+\begin{tikzpicture}[every node/.style={draw, circle, inner sep=2pt}]
+  \node {5}
+    child {node {6}
+      child {node {8}}
+      child {node {8}}
+    }
+    child {node {8}
+      child {node {9}}
+    };
+\end{tikzpicture}
+
+这样，我们就可以写出如下的代码：
+
+\lstinputlisting[language=C++]{code/binary-tree-preorder-traversal.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/binary-tree-inorder-traversal/}
+{二叉树的中序遍历}}
+
+当我们写出了二叉树的前序遍历，我们就能写出二叉树的中序遍历了。我们只需要将前序遍历的代码稍作修改即可。
+我们需要将节点保存在栈中，当我们访问完左孩子后，再访问中间节点。
+
+\lstinputlisting[language=C++]{code/binary-tree-inorder-traversal.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/binary-tree-postorder-traversal/}
+{二叉树的后序遍历}}
+
+二叉树的后续遍历是使用迭代方法最难写的一个算法。因为我们必须在最后访问根节点，但是我们并不知道何时
+这个节点的右子树已经遍历完成了，所以我们可以使用一个变量\texttt{pre}来保存上一次访问的节点，如果
+当前节点的右子树已经遍历完成了，那么我们就可以访问当前节点了。即\texttt{ptr->right == pre}。
+通过这个小技巧，我们就可以得出二叉树的后序遍历的非递归算法了。
+
+\begin{kaobox}[title=二叉树统一迭代遍历方法]
+  通过上述的三个代码，我们已经总结出了二叉树统一迭代遍历的方法。Amazing。
+\end{kaobox}
+
+\lstinputlisting[language=C++]{code/binary-tree-postorder-traversal.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/binary-tree-level-order-traversal/}
+{二叉树的层序遍历}}
+
+二叉树的层序遍历是典型的广度优先搜索算法，通过一个队列保存每层的节点即可，直到队列为空。
+
+\lstinputlisting[language=C++]{code/binary-tree-level-order-traversal.cpp}
+
+当解决了这个问题，我们可以解决如下的问题，其本质都是同一个思路：
+
+\begin{itemize}
+  \item \href{https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/}
+  {二叉树的锯齿形层序遍历}
+  \item \href{https://leetcode.cn/problems/binary-tree-level-order-traversal-ii}
+  {二叉树的层序遍历 II}
+  \item \href{https://leetcode.cn/problems/average-of-levels-in-binary-tree}
+  {二叉树的层平均值}
+  \item \href{https://leetcode.cn/problems/n-ary-tree-level-order-traversal}
+  {N叉树的层序遍历}
+\end{itemize}
+
+\section{二叉树的构建}
+
+\subsection{\href{https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/}
+{从前序与中序遍历序列构造二叉树}}
+
+要解决这个问题，我们首先需要思考前序遍历和中序遍历的特点。前序遍历的第一个节点一定是根节点，而中序遍历
+的根节点左边的节点都是左子树的节点，右边的节点都是右子树的节点。因此，我们可以通过前序遍历的第一个节点
+来确定根节点，然后在中序遍历中找到根节点的位置，然后递归地处理左子树和右子树。
+
+然而，最关键的问题在于，我们应该先处理左子树还是右子树，这个问题的答案是，我们应该先处理左子树。因为
+我们在前序遍历中，先访问的是根节点，然后是左子树，最后是右子树。因此，我们应该先处理左子树，然后再处理
+右子树。为了快速地找到根节点在中序遍历中的位置，我们可以使用一个哈希表来存储中序遍历中每个节点的位置。
+
+\lstinputlisting[language=C++]
+{code/construct-binary-tree-from-preorder-and-inorder-traversal.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/}
+{从中序与后序遍历序列构造二叉树}}
+
+这个问题和上一个问题的思路是一样的，只不过我们需要先处理右子树，然后再处理左子树。
+
+\lstinputlisting[language=C++]{construct-binary-tree-from-inorder-and-postorder-traversal.cpp}
+
+\end{document}
