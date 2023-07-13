@@ -6,7 +6,113 @@
 
 \chapter{模拟}
 
-模拟问题考验的是通过对具体问题的分析去找到循环不变量，或者按照数学归纳法的思想去解决问题。
+模拟问题考验的是通过对具体问题的分析去找到循环不变量，或者按照数学归纳法的思想以及从特殊
+到一般的思想去解决问题。
 
+\section{加减乘除问题}
+
+\subsection{\href{https://leetcode.cn/problems/add-two-numbers/}{两数相加}}
+
+这个题目是一个非常简单的题目，我们只需要按照加法的定义去实现即可。但是，我们需要注意的是，我们
+需要考虑进位的问题。因此，我们需要使用一个变量来记录进位。同时，我们可能遇到两个链表长度不一致
+的情况，因此我们需要在循环中判断两个链表是否为空。然而，我们这样会让代码变得十分冗长。因此，我们
+可以使用一个小技巧，如果链表为空，我们就让其值为0，这样我们就可以简化我们的代码了。
+
+\lstinputlisting[language=C++]{code/add-two-numbers.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/add-binary/}{二进制求和}}
+
+这个题目和上一个题目的思路是一样的，没有任何区别。除了把链表换成了字符串而已。这个问题更关键的
+在于不应该动态分配内存，而是创建一个新的字符串来存储结果。新的字符串的大小应该是两个字符串中
+较长的那个字符串的长度加1或者相等。
+
+\lstinputlisting[language=C++]{code/add-binary.cpp}
+
+\begin{kaobox}[title=类似题目]
+  \begin{itemize}
+    \item \href{https://leetcode.cn/problems/add-strings/}{字符串相加}
+    \item \href{https://leetcode.cn/problems/add-to-array-form-of-integer/}{加一}
+    \item \href{https://leetcode.cn/problems/add-to-array-form-of-integer/}{数组形式的整数加法}
+  \end{itemize}
+\end{kaobox}
+
+\subsection{\href{https://leetcode-cn.com/problems/multiply-strings/}{字符串相乘}}
+
+任何的相乘问题都可以转化为加法问题。显然，我们已经在前面的题目中解决了字符串相加的问题。也就是两数之和。
+因此，我们只需要把这个问题转化为多次两数之和的问题即可。我们可以使用一个数组来存储每一次的结果，然后
+再把这些结果相加即可\sidenote{这个做法显然是要超时的，因为这样复杂度会相当高，而且我们必须要处理溢出的
+情况。需要进行非常复杂的思考}。
+
+另一个思路就是利用分治的方法去解决这个问题，这个思路很简单的。我们假设$num_{1}$为偶数：
+
+\begin{align*}
+  num_{1} \times num_{2} &= (num_{1} / 2 ) * (num_{2} + num_{2}) \\
+                         &= (num_{1} / 4) * (num_{2} + num_{2} + num_{2} + num_{2}) \\
+\end{align*}
+
+这样我们就可以实现以复杂度为$O(\log n)$的算法了。其中，$n$为$num_{1}$的大小。然而，对于这个题我们
+也很难用这个方法去解决，因为我们仍然需要处理数据溢出的问题。
+
+思考到这儿，我们就必须回到最原始的方式，还记得我们在小学的时候是怎么做乘法的吗\sidenote{
+  $$
+  \begin{array}{c@{}c@{}c@{}c@{}c}
+    & & & 3 & 4 \\
+    & & \times & 2 & 5 \\
+    \cline{2-5}
+    & & 7 & 0 & \\
+  + & 6 & 8 & & \\
+  \cline{1-5}
+    & 8 & 9 & 0 & \\
+  \end{array}
+  $$
+}？我们就可以按照这个思路来解决这个问题。由于我们可能需要计算很多次的重复操作，故使用一个哈希表来记录
+每一次的结果，这样我们就可以避免重复计算了。
+
+\lstinputlisting[language=C++]{code/multiply-strings.cpp}
+
+\section{螺旋矩阵系列}
+
+\subsection{\href{https://leetcode.cn/problems/spiral-matrix/}{螺旋矩阵}}
+
+为了实现螺旋矩阵的遍历，我们必须通过画图的方式去找到循环不变量。如下图所示，我们给出了一个
+$6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第二次遍历的路径，绿色是第三次遍历的路径。
+我们可以发现，每一次遍历都是从左上角开始，然后向右走，然后向下走，然后向左走，然后向上走。故我们
+可以维持三个变量，一个为\texttt{i}代表当前位于的行和列，一个是\texttt{widthIndex}代表当前的
+右边界，一个是\texttt{heightIndex}代表当前的下边界。
+
+\begin{tikzpicture}[]
+
+  \draw[arrow, color=red] (0,5) -- (5, 5);
+  \draw[arrow, color=red] (5,5) -- (5, 0);
+  \draw[arrow, color=red] (5,0) -- (0, 0);
+  \draw[arrow, color=red] (0,0) -- (0, 4);
+
+  \draw[arrow, color=blue] (1,4) -- (4, 4);
+  \draw[arrow, color=blue] (4,4) -- (4, 1);
+  \draw[arrow, color=blue] (4,1) -- (1, 1);
+  \draw[arrow, color=blue] (1,1) -- (1, 3);
+
+  \draw[arrow, color=green] (2,3) -- (3, 3);
+  \draw[arrow, color=green] (3,3) -- (3, 2);
+  \draw[arrow, color=green] (3,2) -- (2, 2);
+
+  \foreach \x in {0,...,5} {
+    \foreach \y in {0,...,5} {
+      \filldraw (\x,\y) circle (0.1);
+    }
+  }
+\end{tikzpicture}
+
+同时，我们必须考虑当\texttt{i = widthIndex}即上边界与下边界重合以及\texttt{j = heightIndex}的情况，
+即左边界和右边界重叠的情况。这样我们可以得出如下的代码：
+
+\lstinputlisting[language=C++]{code/spiral-matrix.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/spiral-matrix-ii/}{螺旋矩阵 II}}
+
+这个题与上一个题没有任何本质的区别，这个题只不过限定了矩阵为方阵，然而上述的代码是通用的，因此我们只需要
+维护一个变量，上面的代码直接套用。
+
+\lstinputlisting[language=C++]{code/spiral-matrix-ii.cpp}
 
 \end{document}

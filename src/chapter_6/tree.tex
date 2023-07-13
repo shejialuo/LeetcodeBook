@@ -47,7 +47,7 @@
 \subsection{\href{https://leetcode.cn/problems/binary-tree-postorder-traversal/}
 {二叉树的后序遍历}}
 
-二叉树的后续遍历是使用迭代方法最难写的一个算法。因为我们必须在最后访问根节点，但是我们并不知道何时
+二叉树的后序遍历是使用迭代方法最难写的一个算法。因为我们必须在最后访问根节点，但是我们并不知道何时
 这个节点的右子树已经遍历完成了，所以我们可以使用一个变量\texttt{pre}来保存上一次访问的节点，如果
 当前节点的右子树已经遍历完成了，那么我们就可以访问当前节点了。即\texttt{ptr->right == pre}。
 通过这个小技巧，我们就可以得出二叉树的后序遍历的非递归算法了。
@@ -99,6 +99,47 @@
 
 这个问题和上一个问题的思路是一样的，只不过我们需要先处理右子树，然后再处理左子树。
 
-\lstinputlisting[language=C++]{construct-binary-tree-from-inorder-and-postorder-traversal.cpp}
+\lstinputlisting[language=C++]{code/construct-binary-tree-from-inorder-and-postorder-traversal.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal/}
+{根据前序和后序遍历构造二叉树}}
+
+实际上前序遍历和后序遍历并不能唯一确定一棵二叉树，因为我们无法确定左子树和右子树的边界。但是，这个问题只需要
+我们还原出任意一个符合条件的二叉树即可。
+
+我们可以采取一个十分简单的思路。取当前节点的前序遍历的下一个节点作为其左子树的根节点，然后在后序遍历中确定该节点
+的前一个节点作为其右子树的根节点。这样，我们就可以递归地构建出一棵二叉树了。但是这样我们还需要做一个工作，就是需要
+记录这个节点是否已经被使用过了，如果使用过了，我们就不能再使用了。这个思路实际上并不能算上很优雅，但是这个解法
+很直观且简单\sidenote{实际上，这个题确实是有更加优雅的做法。既然我们能够确定出当前节点的左子树的根节点以及其右子树
+的根节点，那么我们就能够用长度的方式代替我们使用的\texttt{visited}变量，但我个人认为我这个思路是容易理解的。}。
+
+\lstinputlisting[language=C++]{code/construct-binary-tree-from-preorder-and-postorder-traversal.cpp}
+
+\section{二叉树的基础题目}
+
+\subsection{\href{https://leetcode.cn/problems/maximum-depth-of-binary-tree/}{二叉树的最大深度}}
+
+这个题我们只需要简单地使用递归进行处理即可，对于空节点，我们返回0，对于非空节点，我们返回左右子树的最大深度加1。
+显然，利用二叉树的前序遍历我们就可以简单地得出如下的代码：
+
+\lstinputlisting[language=C++]{code/maximum-depth-of-binary-tree.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/}{二叉树的最小深度}}
+
+似乎我们可以直接调用上一题的代码，把 。然而这样是不行的。因为如果我们的二叉树只有左子树或者只有右子树，那么我们的代码
+会返回0，但是实际上这个二叉树的最小深度是3。如下图所示：
+
+\begin{tikzpicture}[every node/.style={circle,draw,minimum size=7mm}]
+  \node (5) {5}
+    child {node (6) {6}
+      child {node (8) {8}}};
+\end{tikzpicture}
+
+因此，当有某个节点其左子树或者右子树为空时，我们会得到其深度为0。当遇到了这样的情况，我们应该返回左子树
+和右子树的最大的深度加1。当不会出现这样的情况时，我们就可以返回左子树和右子树的最小深度加1了。于是，我们
+就可以得出如下的代码：
+
+\lstinputlisting[language=C++]{code/minimum-depth-of-binary-tree.cpp}
+
 
 \end{document}
