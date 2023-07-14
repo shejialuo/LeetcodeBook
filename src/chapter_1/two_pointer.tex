@@ -214,6 +214,70 @@ $localEnd$减1，直到$localStart < 0 \lor localEnd \geq s.size() \lor s[localS
 
 \section{滑动窗口}
 
+对于滑动窗口的问题，最关键的就是确定好窗口的性质，确定好窗口的性质，我们才能确定如何移动窗口。
+进而确定循环不变量。
 
+\subsection{\href{https://leetcode.cn/problems/longest-substring-without-repeating-characters/}
+{无重复字符的最长子串}}
+
+我们维持两个指针，一个是\texttt{windowStart}，另一个是\texttt{windowEnd}。我们不断地移动
+\texttt{windowEnd}，直到出现重复的字符，然后我们移动\texttt{windowStart}，直到重复的字符
+消失。可见，我们最关键的是一直维持窗口的性质不变。
+
+\lstinputlisting[language=C++]{code/longest_substring_without_repeating_characters.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/substring-with-concatenation-of-all-words/}
+{串联所有单词的子串}}
+
+显然，这个题的窗口是显而易见的。我们的窗口大小始终是保持不变的，然而在整个过程中，我们的窗口需要移动
+一个单词的长度。同时，为了遍历所有的子串，我们需要窗口的起始位置从$0$到$words[0].size() - 1$。如下图所示：
+我们假设数组的大小为$9$，单词的大小为$3$，那么我们的窗口的起始位置就是$0$到$2$，然后窗口的起始位置
+就是$1$到$3$，以此类推，直到窗口的起始位置为$6$到$8$。然后我们改变窗口的起始位置到$1$，继续重复
+上面的步骤。
+
+\begin{tikzpicture}
+  % draw the array
+  \foreach \x/\val in {0/1, 1/2, 2/3, 3/4, 4/5, 5/6, 6/7, 7/8, 8/9} {
+    \draw (\x,0) rectangle ++(1,1) node[midway] {};
+  }
+  % draw the sliding window
+  \foreach \x/\c in {0/red,3/blue,6/green} {
+    \draw[thick,\c] (\x,0.2) rectangle ++(3,0.6);
+  }
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  % draw the array
+  \foreach \x/\val in {0/1, 1/2, 2/3, 3/4, 4/5, 5/6, 6/7, 7/8, 8/9} {
+    \draw (\x,0) rectangle ++(1,1) node[midway] {};
+  }
+  % draw the sliding window
+  \foreach \x/\c in {1/red,4/blue} {
+    \draw[thick,\c] (\x,0.2) rectangle ++(3,0.6);
+  }
+\end{tikzpicture}
+
+于是，我们就可以这样不断地进行得到如下的代码：
+
+\lstinputlisting[language=C++]{code/substring_with_concatenation_of_all_words.cpp}
+
+\section{反转字符串系列}
+
+反转字符串也是典型的双指针应用。
+
+\subsection{\href{https://leetcode.cn/problems/reverse-string/}{反转字符串}}
+
+这个题过于简单了，但是确实反转字符串的基础。我们可以使用两个指针，一个指向头，一个指向尾，然后
+交换两个指针指向的元素，然后移动两个指针即可。
+
+\lstinputlisting[language=C++]{code/reverse_string.cpp}
+
+\begin{kaobox}[title=类似题目]
+  \begin{itemize}
+    \item \href{https://leetcode.cn/problems/reverse-vowels-of-a-string/}{反转字符串中的元音字母}
+    \item \href{https://leetcode.cn/problems/reverse-string-ii/}{反转字符串 II}
+    \item \href{https://leetcode.cn/problems/reverse-only-letters/}{仅仅反转字母}
+  \end{itemize}
+\end{kaobox}
 
 \end{document}

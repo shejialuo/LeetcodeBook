@@ -150,4 +150,151 @@ class LFUCache {
     全 O(1) 的数据结构}
 \end{kaobox}
 
+\section{链表}
+
+\subsection{\href{https://leetcode.cn/problems/design-linked-list/}{设计链表}}
+
+
+
+\section{栈与队列}
+
+\subsection{\href{https://leetcode-cn.com/problems/min-stack/}{最小栈}}
+
+要求实现一个基本的栈，同时能够找到栈里面的最小的元素。我们可以使用两个栈来实现，一个栈用于存储数据，另一个
+栈用于存储最小的元素。当我们需要插入数据的时候，我们需要判断当前的数据是否小于等于最小栈的栈顶元素，如果
+是，则将数据插入到最小栈中。当我们需要删除数据的时候，我们需要判断当前的数据是否等于最小栈的栈顶元素，如果
+是，则将最小栈的栈顶元素删除\sidenote{实际上，我并不认为这是一个容易想到的思路，本质上就是利用单调
+栈的思路解决问题，我们需要记录在拓扑结构关系上的小于当前最小值的值。}。
+
+\lstinputlisting[language=C++]{code/min-stack.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/implement-stack-using-queues/}{用队列实现栈}}
+
+如何用队列实现栈了。我们没有任何好的办法。我们必须在一个元素新加入元素的时候，重新组织队列里面的元素。
+我们利用数学归纳法寻找循环不变量，假设前$n$个元素在队列中满足栈的性质，当我们加入$n + 1$个元素时候，
+第$n + 1$个元素应该最先出队，然而按照队列的性质，第$n + 1$个元素应该最后出队。因此我们首先将该元素
+加入队列，然后把所有剩下的元素出队，再入队，这样就能够保证第$n + 1$个元素最先出队。
+
+\begin{example}
+  我们通过举一个例子，假设此时队列中的元素为\texttt{[1, 2, 3]}，我们需要加入元素\texttt{4}，此时
+  队列中的元素应该为\texttt{[4, 1, 2, 3]}，然而我们需要把队列中的元素变为\texttt{[1, 2, 3, 4]}。
+  故我们先出队，再入队，即可。
+\end{example}
+
+\lstinputlisting[language=C++]{code/implement-stack-using-queues.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/implement-queue-using-stacks/}{用栈实现队列}}
+
+反过来，我们又该如何用栈实现队列了。当我们用栈存储元素时，如果我们向获取队列的头部元素，我们需要找到栈的底部元素。
+在这个过程中，我们可以使用另一个栈去保存当前栈的数据。
+
+\begin{example}
+  假设我们把元素\texttt{[1, 2, 3]}压入栈\texttt{st}中，此时栈的底部元素为1，我们需要获取队列的头部元素，
+  我们需要把1弹出，在这个过程中，我们需要弹出栈顶元素3，我们把栈顶元素3压入到另一个栈\texttt{qu}中，然后
+  弹出栈顶元素2，我们把栈顶元素2压入到另一个栈中，然后弹出栈顶元素1，我们就得到了队列的头部元素。
+  同时，我们的另一个栈\texttt{qu}就维持了队列的顺序。
+\end{example}
+
+从上面的例子可以看出，当\texttt{qu}不为空时，我们能直接找到队列的头部元素，当\texttt{qu}为空时，我们需要
+将\texttt{st}中的元素全部弹出，然后压入到\texttt{qu}中，这样我们就能够找到队列的头部元素了。经过上述的分析
+我们可以写出如下的代码：
+
+\lstinputlisting[language=C++]{code/implement-queue-using-stacks.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/design-circular-queue/}{设计循环队列}}
+
+循环队列是十分常见的数据结构，其在许多计算机系统中都有应用\sidenote{循环队列主要是提供了一个十分重要的
+抽象，也就是我们的队列可以接收无穷的元素，在TCP/IP协议中，RingBuffer的实现就与循环队列有关}。
+
+要实现循环队列，我们只需要一个数组，两个指针，一个指针表示当前队列的头部，一个指针表示当前队列的尾部。
+同时我们需要一个变量来记录当前队列的大小\sidenote{
+你可能会疑惑，为什么我们需要记录当前队列的大小，而不是直接使用两个指针的关系来判断。这是因为我们根本
+无法区分队列为空和队列为满的情况。
+}。初始的时候，两个指针都指向数组的第一个元素。
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , , }}
+
+  \foreach \x/\val in {0/, 1/, 2/, 3/} {
+      \draw (\x*\width, 0) rectangle ++(\width, \height) node[midway] {};
+  }
+
+  \draw[arrow, color=red] (0.2, 1.5) -- (0.2, 1) node[midway, above left] {front};
+  \draw[arrow, color=blue] (0.6, 1.5) -- (0.6, 1) node[midway, above right] {rear};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {0};
+
+  \foreach \x/\val in {1/, 2/, 3/} {
+      \draw (\x*\width, 0) rectangle ++(\width, \height) node[midway] {};
+  }
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {front};
+  \draw[arrow, color=blue] (1.5, 1.5) -- (1.5, 1) node[midway, above right] {rear};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {0};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {1};
+
+
+  \foreach \x/\val in {2/, 3/} {
+      \draw (\x*\width, 0) rectangle ++(\width, \height) node[midway] {};
+  }
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {front};
+  \draw[arrow, color=blue] (2.5, 1.5) -- (2.5, 1) node[midway, above right] {rear};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {0};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {1};
+  \draw (2, 0) rectangle ++(\width, \height) node[midway] {2};
+
+  \foreach \x/\val in {3/} {
+      \draw (\x*\width, 0) rectangle ++(\width, \height) node[midway] {};
+  }
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {front};
+  \draw[arrow, color=blue] (3.5, 1.5) -- (3.5, 1) node[midway, above right] {rear};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {0};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {1};
+  \draw (2, 0) rectangle ++(\width, \height) node[midway] {2};
+  \draw (3, 0) rectangle ++(\width, \height) node[midway] {3};
+
+  \draw[arrow, color=red] (0.2, 1.5) -- (0.2, 1) node[midway, above left] {front};
+  \draw[arrow, color=blue] (0.6, 1.5) -- (0.6, 1) node[midway, above right] {rear};
+\end{tikzpicture}
+
+于是，我们可以得出如下的代码：
+
+\lstinputlisting[language=C++]{code/design-circular-queue.cpp}
+
+\begin{kaobox}[title=相关题目]
+  \begin{itemize}
+    \item \href{https://leetcode-cn.com/problems/design-circular-deque/}{设计循环双端队列}
+  \end{itemize}
+\end{kaobox}
+
 \end{document}
