@@ -280,4 +280,15 @@ $localEnd$减1，直到$localStart < 0 \lor localEnd \geq s.size() \lor s[localS
   \end{itemize}
 \end{kaobox}
 
+\subsection{\href{https://leetcode-cn.com/problems/reverse-words-in-a-string/}{翻转字符串里的单词}}
+
+一个最简单的思路就是函数式的做法，首先将字符串里面所有的单词抽取出来，然后反转，最后再拼接起来。但是这样会消耗极大的
+空间，因为我们需要额外的空间来存储单词。我们可以使用双指针的方式来解决这个问题。我们如果首先对字符串进行翻转，我们
+就可以得到单词的顺序是反的，然后我们再对每一个单词进行翻转，就可以得到我们想要的结果\sidenote{是不是一个十分聪明的
+想法，然而并不是那么容易得出这个思路。}。
+
+然而，这个问题还需要一个操作，需要对字符串的空格进行删除。这个过程仍然使用双指针的思路进行处理即可。
+
+\lstinputlisting[language=C++]{code/reverse_words_in_a_string.cpp}
+
 \end{document}
