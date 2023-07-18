@@ -115,4 +115,31 @@ $6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第�
 
 \lstinputlisting[language=C++]{code/spiral-matrix-ii.cpp}
 
+\section{字符串问题}
+
+字符串问题有许多关于模拟的问题，这些问题都是非常简单的问题，但是我们需要注意的是，我们需要考虑
+边界条件，以及特殊情况。
+
+\section{特定模拟问题}
+
+\subsection{\href{https://leetcode.cn/problems/next-permutation/}{下一个排列}}
+
+下一个排列是极其重要的模拟问题，其可以用于生成全排列以及用于解决其他的一些问题。其算法如下：
+
+\begin{itemize}
+  \item 从右到左扫描排列，找到第一个比右边元素小的元素，记为$i$。
+  \item 从右到左扫描排列，找到第一个比$i$大的元素，记为$j$。
+  \item 交换$i$和$j$。
+  \item 将$j \to n - 1$的元素逆序。
+\end{itemize}
+
+\lstinputlisting[language=C++]{code/next-permutation.cpp}
+
+\begin{kaobox}[title=类似题目]
+  \begin{itemize}
+    \item \href{https://leetcode-cn.com/problems/next-greater-element-iii/}{下一个更大元素 III}
+    \item \href{https://leetcode.cn/problems/permutation-sequence/}{排列序列}
+  \end{itemize}
+\end{kaobox}
+
 \end{document}
