@@ -120,6 +120,29 @@ $6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第�
 字符串问题有许多关于模拟的问题，这些问题都是非常简单的问题，但是我们需要注意的是，我们需要考虑
 边界条件，以及特殊情况。
 
+\section{树模拟问题}
+
+\subsection{\href{https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/}
+{填充每个节点的下一个右侧节点指针}}
+
+这个题我们如果使用层次遍历直接就秒杀了。但是我们可以完全从另一个角度出发解决这个问题。由于限定
+了树为完全二叉树，我们可以很明确，每个节点必然有一个左孩子和一个右孩子。对于每一层，我们拥有
+上一层的信息，也就是上一层本质是一个链表，我们可以依赖这个信息对其孩子们做处理。
+
+很明显，有两种情况，连接同一个父节点的左孩子和右孩子。然后连接相邻父节点的右孩子和其左孩子。
+不断如此操作即可得出代码。
+
+\lstinputlisting[language=C++]{code/populating-next-right-pointers-in-each-node.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/populating-next-right-pointers-in-each-node-ii/}
+{填充每个节点的下一个右侧节点指针II}}
+
+本题与上题唯一的区别在于树变为了普通的二叉树了，我们仍然考虑我们维持了上一层的状态。但是，我们的
+连接需要更加具有普遍性，也就是我们需要把连接变为链表的尾插法。这样我们就可以解决这个问题了。对于
+每层我们都需要有一个虚拟节点作为其头节点。
+
+\lstinputlisting[language=C++]{code/populating-next-right-pointers-in-each-node-ii.cpp}
+
 \section{特定模拟问题}
 
 \subsection{\href{https://leetcode.cn/problems/next-permutation/}{下一个排列}}

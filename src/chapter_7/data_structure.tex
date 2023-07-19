@@ -125,8 +125,19 @@
 
 \end{tikzpicture}
 
-从而，我们就能给出如下的代码：
+从而，我们就能给出如下的代码。我们可以发现栈顶元素永远是当前元素，其上一个入栈的元素是第一个大于当前元素的元素。
+如果我们遇到了一个比栈顶元素大的元素，那么就证明我们发现了当前栈顶元素的左侧第一个比它大的元素，以及右侧第一个比它
+大的元素，这就与我们的暴力解法相统一了。
 
 \lstinputlisting[language=C++]{code/trapping-rain-water-stack.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/largest-rectangle-in-histogram/}{柱状图中最大的矩形}}
+
+解决这个问题首先必须要明确什么时候矩形是最大的。很明显我们希望这个矩形尽可能越宽，同时尽可能越高。所以
+这个问题的暴力方法就出来了。我们需要找每个柱子左右两边第一个小于该柱子的柱子。
+
+那么按照接雨水的方法，我们可以再次设置一个单调递增的栈。利用接雨水的方法解决这个问题。
+
+\lstinputlisting[language=C++]{code/largest-rectangle-in-histogram.cpp}
 
 \end{document}

@@ -1,0 +1,69 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+\setchapterpreamble[u]{\margintoc}
+
+\chapter{二分查找}
+
+二分查找是一个相当重要的算法，其实现并不算复杂，然而当二分查找运用于解决实际问题中时，其实现的细节却往往不那么容易。
+本章将介绍二分查找的基本思想，以及如何将二分查找应用于解决实际问题中。
+
+\section{基础}
+
+\subsection{\href{https://leetcode.cn/problems/binary-search/}{二分查找}}
+
+只需要把区别维持好就行了，我维持的区间是左闭右开。
+
+\lstinputlisting[language=C++]{code/binary-search.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/}
+{在排序数组中查找元素的第一个和最后一个位置}}
+
+本题考察的仍然是二分查找的基础操作，其涉及到\texttt{lower\_bound}和\texttt{upper\_bound}两个操作。
+首先我们考虑如何查找到第一个位置，当我们访问到目标值时，我们应该继续向左移动继续搜索。对于最后一个位置，当
+我们访问到目标值时，我们应该继续向右移动继续搜索。
+
+\lstinputlisting[language=C++]{code/find-first-and-last-position-of-element-in-sorted-array.cpp}
+
+\section{应用}
+
+二分法的应用场景很多，实际上更多的是二分是一种思想。利用二分解决问题的关键问题在于必须明确二分法是正确的。
+
+\subsection{\href{https://leetcode.cn/problems/search-in-rotated-sorted-array/}{搜索旋转排序数组}}
+
+本题是二分查找的一个变形。首先我们设这个有序数组为$a_{1}a_{2}a_{j}\dots a_{n}$，我们进行
+旋转，此时数组成为$a_{j + 1} \dots a_{n} a_{1}a_{2} \dots a_{j}$。很显然数组被分为了
+两个有序数组。显然，我们需要区分目标值在哪个数组中，然后再进行二分查找。
+
+我们通过举例子来说明这个问题。假设数组为$2,3,4,5,6,7,0,1$，我们的目标值为$1$\sidenote{
+显然，举了这个例子我们就能反推$7,8,1,2,3,4,5,6$该如何寻找目标值为$8$的情况。
+}。
+
+\begin{itemize}
+  \item $start = 0, end = 8, mid = 4$。我们找到了当前的中间值为6。其大于目标值，按照正常
+  的二分搜索，我们似乎需要移动$end$指针。但是由于目标值小于2且当前的中间值大于2,证明我们位于
+  第一个数组中，我们需要移动指针到第二个数组。因此我们反而应该移动$start$指针。
+  \item $start = 5, end = 8, mid = 6$。我们找到了当前的中间值为0。其小于目标值。我们此时
+  可以正常的按照二分搜索移动$start$指针。
+  \item $start = 7, end = 8, mid = 7$。我们找到了1。
+\end{itemize}
+
+于是我们可以得出如下的总结：
+
+\begin{itemize}
+  \item 当中间值大于目标值时，有两种情况。目标值可能位于第一个数组中，也可能位于第二个数组中。
+  如果说中间值位于第一个数组中（即$nums[mid] >= nums[0]$）且目标值位于第一个数组中(
+  $target >= nums[0]$)，那么我们可以遵循正常的二分搜索。如果目标值位于第二个数组中，那么我们
+  需要移动$start$指针。
+  \item 当中间值小于目标值时，有两种情况。目标值可能位于第一个数组中，也可能位于第二个数组中。
+  如果说中间值位于第二个数组中（即$nums[mid] < nums[0]$）且目标值位于第二个数组中(
+  $target < nums[0]$)，那么我们可以遵循正常的二分搜索。如果目标值位于第一个数组中，那么我们
+  需要移动$end$指针。
+\end{itemize}
+
+然后，我们可以得出如下的代码\sidenote{实际上，二分查找的应用是极其困难的。}。
+
+\lstinputlisting[language=C++]{code/search-in-rotated-sorted-array.cpp}
+
+\end{document}
