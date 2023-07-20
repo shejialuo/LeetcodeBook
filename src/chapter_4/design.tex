@@ -150,12 +150,6 @@ class LFUCache {
     全 O(1) 的数据结构}
 \end{kaobox}
 
-\section{链表}
-
-\subsection{\href{https://leetcode.cn/problems/design-linked-list/}{设计链表}}
-
-
-
 \section{栈与队列}
 
 \subsection{\href{https://leetcode-cn.com/problems/min-stack/}{最小栈}}
@@ -296,5 +290,140 @@ class LFUCache {
     \item \href{https://leetcode-cn.com/problems/design-circular-deque/}{设计循环双端队列}
   \end{itemize}
 \end{kaobox}
+
+\subsection{\href{https://leetcode.cn/problems/design-front-middle-back-queue/}{设计前中后队列}}
+
+这个题最复杂的在于找到队列的中间位置。我们有三种方式实现该问题：
+
+\begin{itemize}
+  \item 使用双向链表，每次要插入中间位置的时候，我们需要遍历链表，找到中间位置。但是这样的复杂度为$O(n)$。
+  \item 使用两个双向队列。
+  \item 使用一个双向链表，同时使用一个迭代器指向中间位置。这个迭代器伴随着插入和删除操作的进行而移动。
+\end{itemize}
+
+我采用了最后一种方法。然而这个方法相当复杂，因为我们需要考虑迭代器的移动。我们通过画图总结出迭代器的移动规律。
+首先是当队列为空时，此时无论是插入头部、尾部或者中间，迭代器都应该指向头部。当队列不为空时，我们需要考虑的情况
+就相当复杂了。
+
+假设当前队列只有一个元素1，如果此时我们插入尾部元素2。按照定义，我们的迭代器应该继续指向1。如果此时我们再向
+尾部插入元素3，此时迭代器应该指向2。因此，我们可以得出一个重要的结论。
+
+\begin{itemize}
+  \item 对于插入尾部来说，当元素为奇数个时，不需要移动迭代器。当元素为偶数个时，需要向后移动迭代器。
+  \item 对于删除尾部来说，当元素为奇数个时，需要向前移动迭代器。当元素为偶数个时，不需要移动迭代器。
+\end{itemize}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ ,}}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {1};
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {middle};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {1};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {2};
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {middle};
+
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {1};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {2};
+  \draw (2, 0) rectangle ++(\width, \height) node[midway] {3};
+
+  \draw[arrow, color=red] (1.5, 1.5) -- (1.5, 1) node[midway, above left] {middle};
+
+\end{tikzpicture}
+
+当我们插入头部时，情况正好相反。
+
+\begin{itemize}
+  \item 对于插入头部来说，当元素为奇数个时，需要向前移动迭代器。当元素为偶数个时，不需要移动迭代器。
+  \item 对于删除尾部来说，当元素为奇数个时，不需要移动迭代器。当元素为偶数个时，需要向后移动迭代器。
+\end{itemize}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ ,}}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {1};
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {middle};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {2};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {1};
+
+  \draw[arrow, color=red] (0.5, 1.5) -- (0.5, 1) node[midway, above left] {middle};
+
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \def\width{1}
+  \def\height{1}
+  \def\array{{ , , }}
+
+  \draw (0, 0) rectangle ++(\width, \height) node[midway] {3};
+  \draw (1, 0) rectangle ++(\width, \height) node[midway] {2};
+  \draw (2, 0) rectangle ++(\width, \height) node[midway] {1};
+
+  \draw[arrow, color=red] (1.5, 1.5) -- (1.5, 1) node[midway, above left] {middle};
+
+\end{tikzpicture}
+
+最后，就是插入中间的情况了。我们仍然通过例子来说明，假设目前的队列为$[1,2]$，此时迭代器应该指向1。
+如果此时，我们插入中间元素$3$，队列变为$[3,1,2]$，迭代器不应移动。如果此时，我们插入中间元素$4$，队列
+变为$[3,4,1,2]$，迭代器应该向前移动。
+
+\begin{itemize}
+  \item 对于插入中间来说，当元素为偶数个时，不需要移动迭代器。当元素为奇数个时，需要向前移动迭代器。
+  \item 对于删除中间来说，当元素为偶数个时，需要向后移动迭代器。当元素为奇数个时，不需要移动迭代器。
+\end{itemize}
+
+于是，我们就可以写出如下的代码。
+
+\lstinputlisting[language=C++]{code/design-front-middle-back-queue.cpp}
+
+\section{复杂数据结构设计}
+
+\section{虚拟场景题目}
+
+\subsection{\href{https://leetcode.cn/problems/design-twitter/}{设计推特}}
+
+首先我们需要考虑用户的数据结构应该怎样设计。每个用户应该有个数据结构用于表征其关注的用户，同时应该有一个
+链表用于存放其发送的推文。我们可以使用一个哈希表来存储用户的关注列表，使用链表来存储用户发送的推文。
+
+同时，我们需要一个数据结构来保存推文。我们需要记录推文的id，以及推文的发送时间。当我们需要获取主页时，
+我们需要找到用户以及其关注的用户的最近的10条推文。此时，我们就可以把问题转化为合并$k$个有序链表的问题。
+我们这次使用优先队列解决这个问题。
+
+\lstinputlisting[language=C++]{code/design-twitter.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/design-browser-history/}{设计浏览器历史记录}}
+
+看似这个题我们需要使用链表操作，实际上我们只需要一个数组加指针移动即可。我们需要一个数组来存储历史记录，
+同时我们需要一个指针来记录当前的位置。当我们访问一个新的网页时，我们只需要移动指针，记录当前的值。倒退
+网页时，我们只需要移动指针即可。
+
+\lstinputlisting[language=C++]{code/design-browser-history.cpp}
 
 \end{document}

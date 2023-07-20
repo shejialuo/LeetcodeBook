@@ -6,6 +6,134 @@
 
 \chapter{动态规划}
 
+\section{背包问题}
+
+背包问题需要许多前置知识，本书并不打算详细介绍这些知识，而是直接给出状态转移方程。如果读者对于这些知识
+不熟悉，可以参考相关的书籍。
+
+设总共有$n$个物品，其质量为$weight[i], 0 \leq i < n$，价值为$value[i], 0 \leq i < n$。同时
+假设背包能够容纳的质量为$w$。我们定义$dp[j]$为背包容量为$j$时的最大价值。
+
+对于0/1背包问题，我们有如下的状态转移方程。
+
+$$
+dp[j] = \max(dp[j - weight[i]] + value[i], dp[j])
+$$
+
+\begin{lstlisting}[language=C++]
+  for (int i = 0; i < n ; i++) {
+    for (int j = w; j >= weight[i]; j--) {
+      dp[j] = max(dp[j - weight[i]] + value[i], dp[j]);
+    }
+  }
+\end{lstlisting}
+
+
+对于完全背包问题，我们有如下的状态转移方程。
+
+$$
+dp[j] = \max(dp[j - weight[i]] + value[i], dp[j])
+$$
+
+\begin{lstlisting}[language=C++]
+  for (int i = 0; i < n ; i++) {
+    for (int j = weight[i]; j <= w; j++) {
+      dp[j] = max(dp[j - weight[i]] + value[i], dp[j]);
+    }
+  }
+\end{lstlisting}
+
+对于完全背包问题，我们需要考虑是先遍历物品还是先遍历背包。如果我们先遍历物品，由于我们人为地确定了
+物品的顺序，所以我们得到的永远是组合数。如果我们先遍历背包，那么我们得到的就是排列数。
+
+\subsection{\href{https://leetcode.cn/problems/coin-change/}{零钱兑换}}
+
+由于每种零钱都是无限的，因此这是一个完全背包问题。我们可以很容易地得到状态转移方程。我们设
+$dp[j]$为兑换$j$元的最少硬币数。我们可以得到如下的状态转移方程：
+
+$$
+dp[j] = \min(dp[j - coins[i]] + 1, dp[j])
+$$
+
+\lstinputlisting[language=C++]{code/coin-change.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/coin-change-ii/}{零钱兑换II}}
+\label{subsec:coin-change-ii}
+
+这个题与上一个题没有任何本质的区别，其区别就在于需要求组合数。我们这样就直接限制物品的遍历顺序即可。
+同时我们定义如下的状态。$dp[j]$代表兑换$j$元的组合数。我们可以得到如下的状态转移方程：
+
+$$
+dp[j] += dp[j - coins[i]]
+$$
+
+\lstinputlisting[language=C++]{code/coin-change-ii.cpp}
+
+\subsection{\href{https://leetcode-cn.com/problems/combination-sum-iv/}{组合总和IV}}
+
+这仍然是一个完全背包问题，但是需要我们求排列数。除此之外与\ref{subsec:coin-change-ii}节中的实现
+没有本质区别，由于求排列数我们必须先遍历背包。
+
+\lstinputlisting[language=C++]{code/combination-sum-iv.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/partition-equal-subset-sum/}{分割等和子集}}
+
+这个题看似与0/1背包问题毫无关系，但是我们可以转化为0/1背包问题。我们假设两个集合的和为$sum$，则
+如果这两个集合相等。那么每一个集合的和必然都为$sum / 2$。这样我们就可以只对一个集合分析，也就是
+对于一个数组，我们可以选择其元素或者不选择其元素。然后判断其容量为$sum / 2$的背包能否存在解。
+
+\lstinputlisting[language=C++]{code/partition-equal-subset-sum.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/target-sum/}{目标和}}
+
+我们实际上可以用DFS解决这个问题，对每一个元素来其有两个选择，一个是加上当前元素，一个是减去当前元素。
+然而，我们可以转化为0/1背包问题。我们假设相加的元素为$x$，那么相减的元素为$sum - x$。我们可以得到
+$x - (sum - x) = target$。则$x = (target + sum) / 2 $。实际上，我们就转化为了一个0/1背包问题
+\sidenote{实际上，当问题仅仅只有两个状态的变化时，我们就可以思考能否应用0/1背包问题}。
+
+同样的，我们就思考从数组中选择元素，能否组成和为$x$的背包。我们定义如下的状态。$dp[j]$代表组成
+$j$的组合数。我们可以得到如下的状态转移方程：
+
+$$
+dp[j] += dp[j - nums[i]]
+$$
+
+\lstinputlisting[language=C++]{code/target-sum.cpp}
+
+\section{打家劫舍系列}
+
+\subsection{\href{https://leetcode-cn.com/problems/house-robber/}{打家劫舍}}
+
+我们可以使用DFS解决这个问题，对于一个房子，我们有两个选择：
+
+\begin{itemize}
+  \item 如果我们偷窃了这个房子的前一个房子，我们什么也不能做。
+  \item 如果我们没有偷窃这个房子的前一个房子，我们可以偷窃这个房子也可以不偷窃这个房子。
+\end{itemize}
+
+根据这样我们就可以写出如下的代码\sidenote{当然，会超时}：
+
+\lstinputlisting[language=C++]{code/house-robber-bfs.cpp}
+
+然而，很明显我们能发现许多重复的计算，我们可以使用记忆化搜索来解决这个问题。然而，我们直接用
+状态思考，设$dp[i]$为偷窃前$i$个房子的最大收益。根据上述的选择，我们有两个操作。那么我们
+可以得到如下的状态方程：
+
+$$
+dp[i] = \max(dp[i - 2] + nums[i], dp[i - 1])
+$$
+
+\lstinputlisting[language=C++]{code/house-robber-dp.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/house-robber-ii/}{打家劫舍II}}
+
+本题添加了一个新的条件，也就是房屋成了一个环。我们已经解决了没有环的问题。按照正常的思路，
+我们应该需要把这个问题转化为没有环的问题。所以我们可以人为地打破这个环。由于第一个房屋和
+最后一个房屋是连接的，所以我们只需要考虑偷窃第一个房屋到第$n - 1$个房屋和第二个房屋到第$n$
+个房屋。选择这两种的最大值即可。从而优雅地解决这个问题。
+
+\lstinputlisting[language=C++]{code/house-robber-ii.cpp}
+
 \section{买卖股票问题}
 
 买卖股票问题是状态机DP的典型应用，明确其状态以及状态转移方程是解决这类问题的关键。
@@ -133,6 +261,121 @@ $dp[i][0]$状态买入股票。
 这样我们就可以得出如下的代码：
 
 \lstinputlisting[language=C++]{code/best-time-to-buy-and-sell-stock-with-cooldown.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/house-robber-iii/}{打家劫舍III}}
+
+你可能会疑惑，为什么这个问题会被归纳为状态机dp问题。实际上，我们能够从状态去思考这个问题，对于一个节点
+其只有两个状态：偷窃或者不偷窃。但是我们的状态转移该如何实现了？实际上，我们需要从叶子节点到根节点。
+也就是后续遍历。我们可以得到如下的状态转移：
+
+\begin{itemize}
+  \item 对于该节点被偷窃的情况，其孩子节点都不能被偷窃。
+  \item 对于子节点没有被偷窃的情况，其孩子节点可以被偷窃也可以不被偷窃。
+\end{itemize}
+
+根据这两个选择，我们就可以不断进行状态的转移\sidenote{树提供了状态的改变，所以我们不需要手动实现
+状态的转换，也就是依赖遍历树本身的操作实现状态转移。}。
+
+\lstinputlisting[language=C++]{code/house-robber-iii.cpp}
+
+\section{经典的一维和二维dp问题}
+
+DP的问题都比较玄学，实际上DP的算法题就是如此的无聊，你难以从一个正常人的思维模式出发去解决这个
+问题。所以此部分的题目都是比较经典的题目，也就是说你可能会在面试中遇到这些题目。我并不打算
+讲清楚是怎么从常人的思维角度解决问题的\sidenote{因为本质就是猜。}。
+
+\subsection{\href{https://leetcode.cn/problems/longest-increasing-subsequence/}
+{最长递增子序列}}
+
+我们仍然去猜，子序列问题是典型的可能会运用到DP的问题。很显然我们直接在$dp[i]$表示以0到$i$的子数组
+的最长递增子序列的长度。我们可以得到如下的状态转移方程：
+
+$$
+dp[i] = \max (dp[j] + 1, dp[i]), j = 0 \dots i -1, nums[j] < nums[i]
+$$
+
+然后我们就能写出如下的代码：
+
+\lstinputlisting[language=C++]{code/longest-increasing-subsequence.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/maximum-subarray/}{最大子序和}}
+
+由于这个题目要求连续的子数组，那么我们必然可以得到一个结论，也就是$dp[i]$必然依赖于$dp[i - 1]$。
+我们设$dp[i]$为从0到$i - 1$的子数组的最大子序和。那么我们有两种选择：
+
+\begin{itemize}
+  \item 断开当前的子数组，从$i$开始重新计算。
+  \item 或者连接当前的子数组。
+\end{itemize}
+
+也就是我们需要比较上述两种情况的最大值。我们可以得到如下的状态转移方程：
+
+$$
+dp[i] = \max(dp[i - 1] + nums[i], nums[i])
+$$
+
+然后我们就能写出如下的代码：
+
+\lstinputlisting[language=C++]{code/maximum-subarray.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/longest-common-subsequence/}{最长公共子序列}}
+
+这个题目是一个典型的二维dp问题。我们设$dp[i][j]$为$A[0 \dots i]$和$B[0 \dots j]$的最长公共子序列。
+如果$text1[i] == text2[j]$，那么$dp[i][j] = dp[i - 1][j - 1] + 1$。如果不相等，那么就去寻找
+$dp[i - 1][j]$和$dp[i][j - 1]$的最大值\sidenote{最长公共子序列是一个模板题，许多二维dp问题就是
+利用该经典问题进行思考的，任何时候都需要有把未知问题转化为已知问题的思维模式}。
+
+\lstinputlisting[language=C++]{code/longest-common-subsequence.cpp}
+
+\begin{kaobox}[title=相似题目]
+  解决了这个问题，我们就能够直接解决\href{https://leetcode.cn/problems/uncrossed-lines/}{不相交的线}。
+  因为本质不相交的线就是最长公共子序列。
+\end{kaobox}
+
+\subsection{\href{https://leetcode.cn/problems/maximum-length-of-repeated-subarray/}{最长重复子数组}}
+
+这个题目与上一个题目没有任何本质的区别，其区别就在于序列必须连续，那么$dp[i][j]$的状态必然
+只能由$dp[i - 1][j - 1]$确定。
+
+\lstinputlisting[language=C++]{code/maximum-length-of-repeated-subarray.cpp}
+
+\section{最长公共子序列的应用}
+
+这一章涉及到了最长公共子序列的应用，其代码都是类似的，主要着重于递归公式的推导。
+
+\subsection{\href{https://leetcode.cn/problems/distinct-subsequences/}{不同的子序列}}
+
+对于这个问题，我们直接套用公共子序列的模板。如果当前的字符相等即$s[i] = t[j]$，那么我们可以选择删除
+当前的字符，即$dp[i][j - 1]$。也可以选择不删除$dp[i - 1][j -1]$。如果不相等，我们只能选择删除
+当前的字符，即$dp[i - 1][j]$。我们可以得到如下的状态转移方程：
+
+$$
+dp[i][j] = \begin{cases}
+  dp[i - 1][j - 1] + dp[i][j - 1], & s[i] = t[j] \\
+  dp[i - 1][j], & s[i] \neq t[j]
+\end{cases}
+$$
+
+\subsection{\href{https://leetcode.cn/problems/delete-operation-for-two-strings/}{两个字符串的删除操作}}
+
+既然要求删除的次数最少，本质实际上也是在求最长公共子序列。然而，我们不这样做。我们仍然思考。如果当前的字符
+相等即$s[i] = t[j]$，那么我们肯定不删，即$dp[i - 1][j - 1]$。如果不相等，我们只能选择删除两个
+字符$dp[i - 1][j - 1] + 2$，删除$s[i]$，即$dp[i - 1][j] + 1$或者删除$t[j]$即$dp[i][j - 1] + 1$。
+
+然后，我们可以得到如下的递推公式\sidenote{实际上$dp[i - 1][j - 1] + 2$可以省略掉。}：
+
+$$
+dp[i][j] = \begin{cases}
+  dp[i - 1][j - 1] , & s[i] = t[j] \\
+  \min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), & s[i] \neq t[j]
+\end{cases}
+$$
+
+\subsection{\href{https://leetcode.cn/problems/edit-distance/}{编辑距离}}
+
+如果当前的字符相等即$s[i] = t[j]$，那么我们肯定啥也不操作，即$dp[i - 1][j -1]$。如果不相等，那么我们
+有三个选择（删除、添加和替换）。这个最重要的是必须意识到添加和删除没有任何本质的区别。我们删除了一个元素，
+本质就是给另一个字符串添加了一个元素。
 
 \section{复杂的状态机dp}
 
