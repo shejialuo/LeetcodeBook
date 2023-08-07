@@ -428,4 +428,99 @@ $2$中进行过操作了。所以我们只需要处理$[2], [1, 2]$，变为$[],
 
 \lstinputlisting[language=C++]{code/generate-parentheses.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/word-search/}{单词搜索}}
+
+对于任意一个节点，我们可以向上下左右四个方向移动，我们需要判断当前节点是否符合条件，如果符合条件，我们就继续
+向下搜索，否则我们就回溯到上一个节点，继续搜索。对于该问题我们不需要维护\texttt{visited}数组，因为我们可以
+直接修改原数组，然后在回溯的时候再修改回来。
+
+\lstinputlisting[language=C++]{code/word-search.cpp}
+
+\section{区域问题}
+
+\subsection{\href{https://leetcode.cn/problems/number-of-islands/}{岛屿数量}}
+
+寻找岛屿的数量，就是要把每个连着的1都标记为同一个岛屿。我们可以使用深度优先搜索解决这个问题。我们
+使用深度优先搜索找到所有相连的1，并把这些1变为0。每次我们进入一个新的岛屿，我们就把岛屿的数量加一。
+这样我们就能简单地解决这个问题了。
+
+\lstinputlisting[language=C++]{code/number-of-islands.cpp}
+
+\section{基于图的最短路径问题}
+
+基于图的最短路径问题通常是使用广度优先搜索完成操作的，其最重要的过程在于建图。对于某些问题而言，
+图的建立是相当简单的，但是对于某些问题而言，图的建立是抽象的。
+
+\subsection{\href{https://leetcode.cn/problems/shortest-path-in-binary-matrix}{二进制矩阵中的最短路径
+}}
+
+我们可以十分简单地得出这个问题所要表达的意思，对于任意一个位置，我们可以从八个方向移动，我们
+只能够移动到值为0的位置。我们可以使用广度优先搜索解决这个问题。实际上这个问题我们可以抽象为树。
+每一个位置对应一个节点，每一个节点有8个子节点。把这个问题抽象为树，我们就可以写出代码了。
+
+\lstinputlisting[language=C++]{code/shortest-path-in-binary-matrix.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/open-the-lock/}{打开转盘锁}}
+
+我们可以十分简单地得出这个问题所要表达的意思，对于任意一个位置，我们可以向上转动，也可以向下转动。
+那么对于任意一个状态而言，其仍然有8个子状态。我们可以使用广度优先搜索解决这个问题。
+这个问题本质上就和上个问题一样了。我们仍然抽象为了树的结构解决这个问题。
+
+\lstinputlisting[language=C++]{code/open-the-lock.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/word-ladder/}{单词接龙}}
+
+这个题我们仍然可以使用上述的思想处理，对于每一个单词而言，我们可以确定其下一步其能够前进的状态。
+然后我们就能够解决了。实际上，这个问题一点也不复杂，最主要的是利用广度优先搜索即可\sidenote{
+实际上我们是可以提前建图的。这个建图的过程是相当讲究的。我们最粗暴的做法就是通过循环遍历所有的单词，
+判断其是否符合条件。一个最合适的建图方式是对每一个单词，我们都把它的每一个字母都替换为其他的字母，
+判断其是否在字典中。这样我们就能够得到一个图了。利用哈希表，我们可以在$O(1)$的时间内判断一个单
+是否在字典中。这个思路相当关键。
+}。
+
+\lstinputlisting[language=C++]{code/word-ladder.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/word-ladder-ii/}{单词接龙II}}
+
+这个问题需要我们把所有最短的路径全部找出来，一种思路是通过深度优先搜索暴力查找。这样会超时，
+测试用例故意这样设计的，所以我们需要一种更加聪明的方式找到所有的最短路径。也就是我们只需要
+对所需要的信息进行记录即可。我们可以记录每一个节点其前驱节点的信息，这样当我们能够找到
+一条最短路径时，我们就能够通过回溯找到所有的最短路径了\sidenote{实际上，这个题目为了
+效率是这样设置的，对于具体的问题而言，使用深度优先或者广度优先的方式都是可以的，需要根据
+不同的实际问题进行具体的优化。}。
+
+然而，我们上述的讲述是十分简单的。但是实际问题的解决并没有那么简单，我们首先举一个例子，如下图
+所示，如果我们需要找到所有的信息，对于每一层的一个节点，其有可能被访问两次。例如值为tex的节点，
+当我们为节点ted进行访问时，我们会访问tex节点。当我们为节点rex进行访问时，我们也会访问tex节点。
+所以我们必须保证tex能够在同层被访问，而不是仅仅只被访问一次，那么我们就有两种思路来实现。
+
+\begin{itemize}
+  \item 我们可以继续当前节点在广度优先遍历的层数。
+  \item 粗暴地记录下一层有哪些节点，访问完当前层的节点后，将下一层的节点标记为已访问，并
+  添加到队列中。
+\end{itemize}
+
+为了方便，本方法使用第二种方法，严格来说，第一种方法的效率会最高。
+
+\begin{tikzpicture}[node distance=1.5cm]
+  \node (red) at (0,0) {red};
+  \node (ted) at (-1.5,-1.5) {ted};
+  \node (rex) at (1.5,-1.5) {rex};
+  \node (tad) at (-3,-3) {tad};
+  \node (tex) at (3,-3) {tex};
+  \node (tax) at (-1.5,-4.5) {tax};
+
+  \draw [arrow] (red) -- (ted);
+  \draw [arrow] (red) -- (rex);
+  \draw [arrow] (ted) -- (tad);
+  \draw [arrow] (ted) -- (tex);
+  \draw [arrow] (rex) -- (tex);
+  \draw [arrow] (tad) -- (tax);
+  \draw [arrow] (tex) -- (tax);
+\end{tikzpicture}
+
+因此，我们就能够得出如下的代码。
+
+\lstinputlisting[language=C++]{code/word-ladder-ii.cpp}
+
 \end{document}

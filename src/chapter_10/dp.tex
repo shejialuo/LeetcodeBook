@@ -377,6 +377,25 @@ $$
 有三个选择（删除、添加和替换）。这个最重要的是必须意识到添加和删除没有任何本质的区别。我们删除了一个元素，
 本质就是给另一个字符串添加了一个元素。
 
+\section{一维dp问题}
+
+\subsection{\href{https://leetcode.cn/problems/decode-ways/}{解码方法}}
+
+解决dp问题的思路永远是猜。我们设$dp[i]$为长度为$i$的子序列的解码个数，显然其由两个子问题构成，也就是
+$dp[i - 2]$和$dp[i - 1]$。如果$s_{i -1}s_{i}$能够解码，则$dp[i] += dp[i - 2]$，如果
+$s_{i}$能够解码，则有$dp[i] += dp[i - 1]$。我们可以得到如下的递推公式：
+
+$$
+dp[i] += \begin{cases}
+  dp[i - 2], & s_{i - 1}s_{i} \in [10, 26] \\
+  dp[i - 1], & s_{i} \in [1, 9]
+\end{cases}
+$$
+
+然后，我们就可以得到如下的代码：
+
+\lstinputlisting[language=C++]{code/decode-ways.cpp}
+
 \section{复杂的状态机dp}
 
 \subsection{\href{https://leetcode.cn/problems/student-attendance-record-ii/}{学生出勤记录 II}}

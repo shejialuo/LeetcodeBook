@@ -403,7 +403,27 @@ class LFUCache {
 
 \lstinputlisting[language=C++]{code/design-front-middle-back-queue.cpp}
 
+\section{树}
+
+\subsection{\href{https://leetcode.cn/problems/binary-search-tree-iterator/}{二叉搜索树迭代器}}
+
+二叉搜索树的迭代器，实际上就是对二叉搜索树进行中序遍历。我们可以使用栈来实现中序遍历。我们需要每一次返回
+下一个最小的元素，由于是迭代器，我们使用惰性操作的思维解决这个问题。只有当我们调用获取下一个元素的时候，
+我们才进行中序遍历。
+
+\lstinputlisting[language=C++]{code/binary-search-tree-iterator.cpp}
+
 \section{复杂数据结构设计}
+
+\subsection{\href{https://leetcode.cn/problems/implement-trie-prefix-tree/}{实现 Trie (前缀树)}}
+
+首先你需要了解前缀树的基本知识。本书不打算在此赘述。对于一个节点而言，其应该有三个字段，一个字段为其当前值，
+另一个字段指示其是否是一个单词的结尾。同时，其包含一个哈希表，用于存储其子节点。为了合理地分配内存，应该
+使用智能指针进行内存的分配。
+
+同时我们需要提供两个函数，一个是查找孩子和新增孩子。然后我们就可以开始写代码了。
+
+\lstinputlisting[language=C++]{code/implement-trie-prefix-tree.cpp}
 
 \section{虚拟场景题目}
 

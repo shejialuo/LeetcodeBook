@@ -140,4 +140,13 @@
 
 \lstinputlisting[language=C++]{code/largest-rectangle-in-histogram.cpp}
 
+\section{并查集}
+
+\subsection{\href{https://leetcode.cn/problems/number-of-islands/}{岛屿数量}}
+
+我们需要找寻连通的一，是不是正好是并查集的应用呢？我们可以找到所有的1记为$counter$，然后对于相邻的1，我们
+调用并查集的合并操作，我们在合并时直接对$counter - 1$。最后返回$counter$即可。
+
+\lstinputlisting[language=C++]{code/number-of-islands.cpp}
+
 \end{document}

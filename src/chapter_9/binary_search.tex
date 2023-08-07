@@ -66,4 +66,25 @@
 
 \lstinputlisting[language=C++]{code/search-in-rotated-sorted-array.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/first-bad-version/}{第一个错误的版本}}
+
+这个题是很明显的二分应用，由于题目中准确的表示出了只要当前的版本是错误的，那么后面的版本是一定
+是错误的。我们已经在排序数组中查找元素的第一个和最后一个位置问题中阐述了这个思想。
+
+\lstinputlisting[language=C++]{code/first-bad-version.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/search-a-2d-matrix/}{搜索二维矩阵}}
+
+我们可以明显发现矩阵有两个有序状态
+
+\begin{itemize}
+  \item 每一行都是有序的。
+  \item 第$n$行的每一个元素都小于$n + 1$行。
+\end{itemize}
+
+根据这个状态，当我们需要搜索一个数据的时候，我们可以先使用二分搜索找到其所在的行，然后对其
+所在的行使用二分搜索查找元素。
+
+\lstinputlisting[language=C++]{code/search-a-2d-matrix.cpp}
+
 \end{document}

@@ -117,8 +117,24 @@ $6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第�
 
 \section{字符串问题}
 
-字符串问题有许多关于模拟的问题，这些问题都是非常简单的问题，但是我们需要注意的是，我们需要考虑
+字符串问题有许多关于模拟的问题，这些问题都是非常容易理解的问题，但是我们需要注意的是，我们需要考虑
 边界条件，以及特殊情况。
+
+\subsection{\href{https://leetcode.cn/problems/simplify-path/}{简化路径}}
+
+如何简化路径了，首先我们需要提取出路径中的每一个部分。我们可以简单地发现每一个路径都是由斜杠分割的。
+我们可以发现如果我们按照斜杠来分割路径，我们可以得到如下三种情况的路径：
+
+\begin{itemize}
+  \item \texttt{""}，即空路径，这个路径是无效的，我们需要忽略掉；
+  \item \texttt{"."}，即当前路径，这个路径是无效的，我们需要忽略掉；
+  \item \texttt{".."}，即上一级路径，这个路径是有效的，我们需要修改路径；
+  \item \texttt{其他}，即其他路径，这个路径是有效的，我们需要修改路径；
+\end{itemize}
+
+然后我们就可以写出如下的代码：
+
+\lstinputlisting[language=C++]{code/simplify-path.cpp}
 
 \section{树模拟问题}
 
@@ -142,6 +158,37 @@ $6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第�
 每层我们都需要有一个虚拟节点作为其头节点。
 
 \lstinputlisting[language=C++]{code/populating-next-right-pointers-in-each-node-ii.cpp}
+
+\section{区间问题}
+
+\subsection{\href{https://leetcode.cn/problems/merge-intervals/}{合并区间}}
+
+首先我们对区间进行排序，按照左端点进行排序。这样对任意一个区间值$[n_{i}, m_{i}]$我们都可以有
+$n_{0} < n_{1} < \dots < n_{i}$。对于两个相邻的区间$[n_{i}, m_{i}]$以及$[n_{i + 1}, m_{i + 1}]$
+我们可以总结出如下三种情况：
+
+\begin{itemize}
+  \item $n_{i + 1} > m_{i}$，两个区间完全独立。
+  \item $n_{i + 1} < m_{i}, m_{i + 1} \leq m_{i}$，区间变为$n_{i}, m_{i}$。
+  \item $n_{i + 1} < m_{i}, m_{i + 1} > m_{i}$，区间变为$n_{i}, m_{i + 1}$。
+\end{itemize}
+
+于是，我们就可以写出如下的代码：
+
+\lstinputlisting[language=C++]{code/merge-intervals.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/insert-interval/}{插入区间}}
+
+假设我们当前遍历的区间为$[n, m]$，我们需要插入的区间为$[k, l]$。当$k > m$时，我们直接
+将当前的区间加入答案。如果$k <= m$，那么证明我们发现了新的区间会与当前的区间造成重叠。
+此时，我们需要对区间进行合并。
+
+首先，我们需要确定这个区间的左端点，这个左端点必然是$n$和$k$中的较小值。然后，我们需要这个
+区间的右端点，我们需要遍历找到某个区间，其左端点大于$l$。然后我们就可以知道这个区间的上一个
+区间。我们需要确定这个区间的右端点，这个右端点必然是$l$和上一个区间的右端点中的较大值。
+
+\lstinputlisting[language=C++]{code/insert-interval.cpp}
+
 
 \section{特定模拟问题}
 

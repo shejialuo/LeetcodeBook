@@ -261,6 +261,17 @@ $localEnd$减1，直到$localStart < 0 \lor localEnd \geq s.size() \lor s[localS
 
 \lstinputlisting[language=C++]{code/substring_with_concatenation_of_all_words.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/minimum-window-substring/}{最小覆盖子串}}
+
+我们仍然需要去思考怎么去确定窗口的性质，我们首先定义一个变量\texttt{num}表示出现过多少个字符，当
+\texttt{num}等于\texttt{t.size()}的时候，我们就找到了一个合法的子串。因此我们需要维持一个哈希表
+表示在\texttt{windowStart}到\texttt{windowEnd}之间出现的字符的频率。由于我们需要找到最小的子串，
+我们需要移动\texttt{windowStart}，直到\texttt{num}不等于\texttt{t.size()}。关键就是后者的条件，
+仅当我们遇到起作用的字符的时候，我们才需要停止移动\texttt{windowStart}。同时我们需要思考修不修改
+\texttt{num}。
+
+\lstinputlisting[language=C++]{code/minimum_window_substring.cpp}
+
 \section{反转字符串系列}
 
 反转字符串也是典型的双指针应用。
