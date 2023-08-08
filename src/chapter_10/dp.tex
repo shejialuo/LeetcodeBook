@@ -396,6 +396,20 @@ $$
 
 \lstinputlisting[language=C++]{code/decode-ways.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/count-ways-to-build-good-strings/}
+{统计构造好字符串的方案数}}
+
+仍然是猜，猜$dp[i]$为长度为$i$的字符串的构建方式有多少种，我们能够得到如下的转移方程
+
+\begin{align*}
+  dp[i] &= (dp[i] + dp[i - one]) \% M \\
+  dp[i] &= (dp[i] + dp[i - zero]) \% M
+\end{align*}
+
+然后，我们就能得出如下的代码：
+
+\lstinputlisting[language=C++]{code/count-ways-to-build-good-strings.cpp}
+
 \section{复杂的状态机dp}
 
 \subsection{\href{https://leetcode.cn/problems/student-attendance-record-ii/}{学生出勤记录 II}}

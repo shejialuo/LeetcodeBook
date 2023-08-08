@@ -446,6 +446,13 @@ $2$中进行过操作了。所以我们只需要处理$[2], [1, 2]$，变为$[],
 
 \lstinputlisting[language=C++]{code/number-of-islands.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/surrounded-regions/}{被围绕的区域}}
+
+这个题的解法是和上题类似的。我们只需要从边界处进行深度优先搜索即可，对于边界值是$O$的元素，我们
+需要对其进行深度优先搜索。然后将所有的连通的$O$标记，对于没有被标记的$O$，我们就将其变为$X$。
+
+\lstinputlisting[language=C++]{code/surrounded-regions.cpp}
+
 \section{基于图的最短路径问题}
 
 基于图的最短路径问题通常是使用广度优先搜索完成操作的，其最重要的过程在于建图。对于某些问题而言，
@@ -522,5 +529,24 @@ $2$中进行过操作了。所以我们只需要处理$[2], [1, 2]$，变为$[],
 因此，我们就能够得出如下的代码。
 
 \lstinputlisting[language=C++]{code/word-ladder-ii.cpp}
+
+\subsection{\href{https://leetcode.cn/problems/01-matrix/}{01矩阵}}
+
+一个粗暴的方式是对所有的1进行遍历，这样做肯定会超时，我们应该从入口开始搜索，将其转化为广度优先搜索
+问题。
+
+\lstinputlisting[language=C++]{code/01-matrix.cpp}
+
+\section{拓扑排序}
+
+拓扑排序的方式有两种方式可以实现，一种是基于深度优先搜索，一种是基于广度优先搜索\sidenote{
+此处我直接忽略了实现的细节，请参考相关的算法书，因为这是一个十分基础的算法。
+}。
+
+\subsection{\href{https://leetcode.cn/problems/course-schedule/}{课程表}}
+
+经典的拓扑排序的应用。
+
+\lstinputlisting[language=C++]{code/course-schedule.cpp}
 
 \end{document}

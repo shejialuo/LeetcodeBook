@@ -136,6 +136,14 @@ $6 \times 6$的矩阵。其中红色是第一次遍历的路径，蓝色是第�
 
 \lstinputlisting[language=C++]{code/simplify-path.cpp}
 
+\subsection{\href{https://leetcode.cn/problems/decode-string/}{字符串解码}}
+
+显然这是一个递归问题，如果你写过解释器就能够很简单地解决这个问题。当我们遇到了一个数字的时候
+我们需要记录这个数字，然后当我们遇到了一个左方括号的时候，我们需要递归地解码这个字符串，然后
+遇到右方括号的时候，返回这个字符串即可。
+
+\lstinputlisting[language=C++]{code/decode-string.cpp}
+
 \section{树模拟问题}
 
 \subsection{\href{https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/}
